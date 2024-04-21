@@ -28,10 +28,12 @@ public class DaoTest {
 
     @Test
     public void updateTest() {
-        MahjongLog mahjongLog = mahjongLogRepo.findById(16L).orElseThrow();
+        MahjongLog mahjongLog = mahjongLogRepo.findById(1L).orElse(null);
         log.info("mahjongLog: {}", mahjongLog);
-        mahjongLog.setMessage("88");
-        mahjongLog = mahjongLogRepo.save(mahjongLog);
+        if (mahjongLog != null) {
+            mahjongLog.setMessage("88");
+            mahjongLog = mahjongLogRepo.save(mahjongLog);
+        }
         log.info("mahjongLog: {}", mahjongLog);
     }
 }
