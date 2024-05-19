@@ -101,11 +101,12 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>10.13.0</version>
                 <configuration>
+                    <cleanDisabled>false</cleanDisabled>
                     <user>root</user>
                     <password>12345678</password>
-                    <url>jdbc:mysql://192.168.31.1:3306/test</url>
+                    <url>jdbc:mysql://192.168.31.90:3306</url>
                     <schemas>
-                        <schema>test</schema>
+                        <schema>weixin_open_platform</schema>
                     </schemas>
                 </configuration>
             </plugin>
