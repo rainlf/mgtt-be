@@ -1,6 +1,6 @@
 package com.rainlf.weixinmpserver.controller;
 
-import com.rainlf.weixinmpserver.model.ApiResp;
+import com.rainlf.weixinmpserver.controller.model.ApiResp;
 import com.rainlf.weixinmpserver.model.User;
 import com.rainlf.weixinmpserver.service.UserService;
 import lombok.extern.slf4j.Slf4j;

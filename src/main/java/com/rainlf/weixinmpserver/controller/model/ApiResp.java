@@ -1,4 +1,4 @@
-package com.rainlf.weixinmpserver.model;
+package com.rainlf.weixinmpserver.controller.model;
 
 import lombok.Data;
 
