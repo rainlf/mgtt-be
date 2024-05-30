@@ -1,6 +1,6 @@
 package com.rainlf.weixinmpserver.wexin.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -9,11 +9,11 @@ import lombok.Data;
  */
 @Data
 public class Code2SessionResp {
-    @SerializedName("openid")
+    @JsonProperty("openid")
     private String openId;
-    @SerializedName("session_key")
+    @JsonProperty("session_key")
     private String sessionKey;
-    @SerializedName("unionid")
+    @JsonProperty("unionid")
     private String unionId;
     private Integer errcode;
     private String errmsg;

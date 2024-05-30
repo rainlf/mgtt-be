@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rainlf.weixinmpserver.dao.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.rainlf.weixinmpserver.dao.model.User">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="sessionKey" column="session_key" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Table">
+        user
+    </sql>
+    <sql id="Base_Column_List">
+        id,open_id,union_id,
+        nickname,avatar,session_key,
+        create_time,update_time
+    </sql>
+
+    <select id="selectByOpenId" resultType="com.rainlf.weixinmpserver.dao.model.User">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            <include refid="Table"/>
+        where
+            open_id = #{openId}
+    </select>
+
+</mapper>

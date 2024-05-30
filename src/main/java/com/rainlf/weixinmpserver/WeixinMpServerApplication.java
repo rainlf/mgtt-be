@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.rainlf.weixinmpserver.mapper")
+@MapperScan("com.rainlf.weixinmpserver.dao.mapper")
 public class WeixinMpServerApplication {
 
     public static void main(String[] args) {
