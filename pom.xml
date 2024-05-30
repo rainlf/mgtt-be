@@ -103,10 +103,10 @@
                 <version>10.13.0</version>
                 <configuration>
                     <cleanDisabled>false</cleanDisabled>
-<!--                    <user>root</user>-->
+<!--                    <userDo>root</userDo>-->
 <!--                    <password>12345678</password>-->
 <!--                    <url>jdbc:mysql://192.168.31.90:3306</url>-->
-                    <user>root</user>
+                    <userDo>root</userDo>
                     <password>123456</password>
                     <url>jdbc:mysql://localhost:3306</url>
                     <schemas>

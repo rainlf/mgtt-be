@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author rain
@@ -54,9 +55,9 @@ public class WeixinServiceImpl implements WeixinService {
 //        return resp;
 
         Code2SessionResp resp = new Code2SessionResp();
-        resp.setOpenId("open-1");
-        resp.setUnionId("union-1");
-        resp.setSessionKey("key-1");
+        resp.setOpenId(code);
+        resp.setUnionId(code);
+        resp.setSessionKey(UUID.randomUUID().toString());
         return resp;
     }
 }
