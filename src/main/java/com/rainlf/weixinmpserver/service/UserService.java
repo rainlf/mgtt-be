@@ -8,4 +8,6 @@ import com.rainlf.weixinmpserver.model.User;
  */
 public interface UserService {
     User login(String code);
+
+    User update(User user);
 }
