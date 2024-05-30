@@ -5,32 +5,33 @@
 <mapper namespace="com.rainlf.weixinmpserver.infra.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.rainlf.weixinmpserver.model.User">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
-            <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
-            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
-            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-            <result property="asset" column="asset" jdbcType="INTEGER"/>
-            <result property="admin" column="admin" jdbcType="TINYINT"/>
-            <result property="sessionKey" column="session_key" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+        <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="asset" column="asset" jdbcType="INTEGER"/>
+        <result property="admin" column="admin" jdbcType="TINYINT"/>
+        <result property="sessionKey" column="session_key" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Table">
         user
     </sql>
+
     <sql id="Base_Column_List">
         id,open_id,union_id,nickname,avatar,asset,admin,session_key,create_time,update_time
     </sql>
 
     <select id="selectByOpenId" resultType="com.rainlf.weixinmpserver.model.User">
         select
-            <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List"/>
         from
-            <include refid="Table"/>
+        <include refid="Table"/>
         where
-            open_id = #{openId}
+        open_id = #{openId}
     </select>
 
 </mapper>

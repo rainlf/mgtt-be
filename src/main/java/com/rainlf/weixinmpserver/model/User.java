@@ -2,6 +2,7 @@ package com.rainlf.weixinmpserver.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
  * @date 5/21/2024 7:28 AM
  */
 @Data
+@TableName(value ="user")
 public class User {
     @TableId(type = IdType.AUTO)
     private Integer id;
