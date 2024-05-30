@@ -1,6 +1,6 @@
 package com.rainlf.weixinmpserver.service;
 
-import com.rainlf.weixinmpserver.dao.model.User;
+import com.rainlf.weixinmpserver.infra.dao.model.User;
 
 /**
  * @author rain

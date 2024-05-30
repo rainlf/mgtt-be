@@ -1,7 +1,7 @@
-package com.rainlf.weixinmpserver.dao.mapper;
+package com.rainlf.weixinmpserver.infra.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.rainlf.weixinmpserver.dao.model.User;
+import com.rainlf.weixinmpserver.infra.dao.model.User;
 import org.apache.ibatis.annotations.Param;
 
 /**

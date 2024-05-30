@@ -1,6 +1,6 @@
-package com.rainlf.weixinmpserver.wexin.service;
+package com.rainlf.weixinmpserver.infra.wexin.service;
 
-import com.rainlf.weixinmpserver.wexin.model.Code2SessionResp;
+import com.rainlf.weixinmpserver.infra.wexin.model.Code2SessionResp;
 
 /**
  * @author rain

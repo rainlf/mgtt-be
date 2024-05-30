@@ -1,4 +1,4 @@
-package com.rainlf.weixinmpserver.dao.model;
+package com.rainlf.weixinmpserver.infra.dao.model;
 
 import lombok.Data;
 

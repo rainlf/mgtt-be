@@ -1,10 +1,10 @@
 package com.rainlf.weixinmpserver.service.impl;
 
-import com.rainlf.weixinmpserver.dao.mapper.UserMapper;
-import com.rainlf.weixinmpserver.dao.model.User;
+import com.rainlf.weixinmpserver.infra.dao.mapper.UserMapper;
+import com.rainlf.weixinmpserver.infra.dao.model.User;
 import com.rainlf.weixinmpserver.service.UserService;
-import com.rainlf.weixinmpserver.wexin.model.Code2SessionResp;
-import com.rainlf.weixinmpserver.wexin.service.WeixinService;
+import com.rainlf.weixinmpserver.infra.wexin.model.Code2SessionResp;
+import com.rainlf.weixinmpserver.infra.wexin.service.WeixinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
