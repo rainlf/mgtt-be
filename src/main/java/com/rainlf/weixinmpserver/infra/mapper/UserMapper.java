@@ -12,6 +12,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     User selectByOpenId(@Param("openId") String openId);
 
+    int updateAssetChange(@Param("id") Integer id, @Param("assetChange") Integer assetChange);
 }
 
 

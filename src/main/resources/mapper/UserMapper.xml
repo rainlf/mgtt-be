@@ -34,4 +34,13 @@
         open_id = #{openId}
     </select>
 
+    <update id="updateAssetChange">
+        update
+        <include refid="Base_Column_List"/>
+        set
+        asset = asset + #{assetChange}
+        where
+        id = #{id}
+    </update>
+
 </mapper>
