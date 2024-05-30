@@ -2,13 +2,11 @@ package com.rainlf.weixinmpserver.controller;
 
 import com.rainlf.weixinmpserver.controller.model.ApiResp;
 import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.GameInfo;
 import com.rainlf.weixinmpserver.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +26,10 @@ public class GameController {
         log.info("game record, games: {}", games);
         gameService.record(games);
         return ApiResp.success();
+    }
+
+    @GetMapping("/info")
+    public ApiResp<List<GameInfo>> getGameInfo() {
+        return ApiResp.success(gameService.getGameInfo());
     }
 }

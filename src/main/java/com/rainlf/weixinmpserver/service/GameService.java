@@ -1,6 +1,7 @@
 package com.rainlf.weixinmpserver.service;
 
 import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.GameInfo;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ import java.util.List;
 public interface GameService {
 
     void record(List<Game> games);
+
+    List<GameInfo> getGameInfo();
 }
