@@ -36,7 +36,7 @@
 
     <update id="updateAssetChange">
         update
-        <include refid="Base_Column_List"/>
+        <include refid="Table"/>
         set
         asset = asset + #{assetChange}
         where
