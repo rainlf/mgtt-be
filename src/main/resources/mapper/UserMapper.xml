@@ -10,6 +10,8 @@
             <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="asset" column="asset" jdbcType="INTEGER"/>
+            <result property="admin" column="admin" jdbcType="TINYINT"/>
             <result property="sessionKey" column="session_key" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -19,9 +21,7 @@
         user
     </sql>
     <sql id="Base_Column_List">
-        id,open_id,union_id,
-        nickname,avatar,session_key,
-        create_time,update_time
+        id,open_id,union_id,nickname,avatar,asset,admin,session_key,create_time,update_time
     </sql>
 
     <select id="selectByOpenId" resultType="com.rainlf.weixinmpserver.model.User">

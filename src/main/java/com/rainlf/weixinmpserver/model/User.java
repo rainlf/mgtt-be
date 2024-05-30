@@ -18,6 +18,8 @@ public class User {
     private String unionId;
     private String nickname;
     private String avatar;
+    private Integer asset;
+    private Boolean admin;
     private String sessionKey;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
