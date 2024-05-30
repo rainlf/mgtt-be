@@ -1,6 +1,8 @@
-package com.rainlf.weixinmpserver;
+package com.rainlf.weixinmpserver.model;
 
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * @author rain
@@ -14,4 +16,6 @@ public class User {
     private String nickname;
     private String avatar;
     private String sessionKey;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }

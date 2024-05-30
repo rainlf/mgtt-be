@@ -1,7 +1,7 @@
 package com.rainlf.weixinmpserver.dao;
 
-import com.rainlf.weixinmpserver.User;
-import com.rainlf.weixinmpserver.UserMapper;
+import com.rainlf.weixinmpserver.model.User;
+import com.rainlf.weixinmpserver.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

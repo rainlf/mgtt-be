@@ -1,6 +1,7 @@
-package com.rainlf.weixinmpserver;
+package com.rainlf.weixinmpserver.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.rainlf.weixinmpserver.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
