@@ -1,9 +1,11 @@
 package com.rainlf.weixinmpserver;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan("com.rainlf.weixinmpserver.mapper")
 public class WeixinMpServerApplication {
 
     public static void main(String[] args) {
