@@ -34,7 +34,10 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public void record(List<Game> games) {
         String gameId = UUID.randomUUID().toString().replace("-", "");
-        games.forEach(x -> x.setGameId(gameId));
+        games.forEach(x -> {
+            x.setGameId(gameId);
+            x.setType("TEST");
+        });
         games.forEach(x -> gameMapper.insert(x));
         games.forEach(x -> userMapper.updateAssetChange(x.getUserId(), x.getAssetChange()));
     }
@@ -44,7 +47,7 @@ public class GameServiceImpl implements GameService {
         List<Game> games = gameMapper.selectList(null);
         Map<String, List<Game>> gameMap = games.stream().collect(Collectors.groupingBy(Game::getGameId));
 
-        List<User> users = userMapper.selectList(new QueryWrapper<User>().in("username", games.stream().map(Game::getUserId).collect(Collectors.toList())));
+        List<User> users = userMapper.selectList(new QueryWrapper<User>().in("id", games.stream().map(Game::getUserId).collect(Collectors.toList())));
         Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, x -> x, (x, y) -> x));
 
         return gameMap.entrySet().stream()
