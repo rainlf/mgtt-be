@@ -3,6 +3,8 @@ package com.rainlf.weixinmpserver.infra.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.rainlf.weixinmpserver.model.User;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * @author rain
@@ -10,8 +12,10 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    @Select("select * from user where open_id = #{openId}")
     User selectByOpenId(@Param("openId") String openId);
 
+    @Update("update user set asset = asset + #{assetChange} where id = #{id}")
     int updateAssetChange(@Param("id") Integer id, @Param("assetChange") Integer assetChange);
 }
 
