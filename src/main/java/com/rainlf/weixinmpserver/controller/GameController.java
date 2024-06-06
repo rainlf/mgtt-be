@@ -1,7 +1,7 @@
 package com.rainlf.weixinmpserver.controller;
 
 import com.rainlf.weixinmpserver.controller.model.ApiResp;
-import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.db.Game;
 import com.rainlf.weixinmpserver.model.GameInfo;
 import com.rainlf.weixinmpserver.service.GameService;
 import lombok.extern.slf4j.Slf4j;

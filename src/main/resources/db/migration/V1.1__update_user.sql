@@ -1,2 +1,0 @@
-ALTER TABLE user ADD asset int NOT NULL DEFAULT 0 AFTER avatar;
-ALTER TABLE user ADD admin tinyint NOT NULL DEFAULT 0 AFTER asset;

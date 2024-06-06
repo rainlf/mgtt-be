@@ -1,7 +1,7 @@
 package com.rainlf.weixinmpserver.infra.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.db.Game;
 
 /**
  * @author rain

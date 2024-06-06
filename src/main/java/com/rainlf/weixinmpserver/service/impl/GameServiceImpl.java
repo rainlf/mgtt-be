@@ -3,16 +3,15 @@ package com.rainlf.weixinmpserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rainlf.weixinmpserver.infra.mapper.GameMapper;
 import com.rainlf.weixinmpserver.infra.mapper.UserMapper;
-import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.db.Game;
 import com.rainlf.weixinmpserver.model.GameInfo;
-import com.rainlf.weixinmpserver.model.User;
+import com.rainlf.weixinmpserver.model.db.User;
 import com.rainlf.weixinmpserver.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

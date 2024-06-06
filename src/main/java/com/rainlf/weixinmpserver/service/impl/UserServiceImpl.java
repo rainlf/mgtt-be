@@ -3,7 +3,7 @@ package com.rainlf.weixinmpserver.service.impl;
 import com.rainlf.weixinmpserver.infra.mapper.UserMapper;
 import com.rainlf.weixinmpserver.infra.wexin.model.Code2SessionResp;
 import com.rainlf.weixinmpserver.infra.wexin.service.WeixinService;
-import com.rainlf.weixinmpserver.model.User;
+import com.rainlf.weixinmpserver.model.db.User;
 import com.rainlf.weixinmpserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

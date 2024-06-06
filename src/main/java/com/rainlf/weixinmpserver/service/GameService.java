@@ -1,6 +1,6 @@
 package com.rainlf.weixinmpserver.service;
 
-import com.rainlf.weixinmpserver.model.Game;
+import com.rainlf.weixinmpserver.model.db.Game;
 import com.rainlf.weixinmpserver.model.GameInfo;
 
 import java.util.List;
