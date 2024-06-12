@@ -34,30 +34,24 @@ public class WeixinServiceImpl implements WeixinService {
 
     @Override
     public Code2SessionResp code2Session(String code) {
-//        log.info("code2Session, code: {}", code);
-//        Map<String, String> request = ImmutableMap.of(
-//                "appid", appId,
-//                "secret", secret,
-//                "js_code", code,
-//                "grant_type", "authorization_code"
-//        );
-//        Code2SessionResp resp = restTemplate.postForObject(code2Session, request, Code2SessionResp.class);
-//        log.info("code2Session, resp: {}", resp);
-//
-//        if (resp == null) {
-//            throw new RuntimeException("code2Session error, resp is null");
-//        }
-//
-//        if (resp.getErrcode() != 0) {
-//            throw new RuntimeException("code2Session error, resp: " + resp);
-//        }
-//
-//        return resp;
+        log.info("code2Session, code: {}", code);
+        Map<String, String> request = ImmutableMap.of(
+                "appid", appId,
+                "secret", secret,
+                "js_code", code,
+                "grant_type", "authorization_code"
+        );
+        Code2SessionResp resp = restTemplate.postForObject(code2Session, request, Code2SessionResp.class);
+        log.info("code2Session, resp: {}", resp);
 
-        Code2SessionResp resp = new Code2SessionResp();
-        resp.setOpenId(code);
-        resp.setUnionId(code);
-        resp.setSessionKey(UUID.randomUUID().toString());
+        if (resp == null) {
+            throw new RuntimeException("code2Session error, resp is null");
+        }
+
+        if (resp.getErrcode() != 0) {
+            throw new RuntimeException("code2Session error, resp: " + resp);
+        }
+
         return resp;
     }
 }
