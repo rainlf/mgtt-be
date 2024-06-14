@@ -1,7 +1,8 @@
 package com.rainlf.weixin.app.controller;
 
+import com.rainlf.weixin.app.dto.ApiResp;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AdviceController {
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception exception) {
+    public ApiResp<String> handleException(Exception exception, HttpServletResponse response) {
         log.error("biz api error", exception);
-        return ResponseEntity.internalServerError().body(exception.getMessage());
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 这将设置HTTP状态码为400
+        return ApiResp.failure(exception.getMessage());
     }
 }
 
