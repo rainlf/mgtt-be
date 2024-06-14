@@ -1,7 +1,7 @@
 package com.rainlf.weixin.infra.db.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.rainlf.weixin.infra.db.model.MahjongRecord;
+import com.rainlf.weixin.infra.db.model.UserAsset;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 6/13/2024 10:34 PM
  */
 @Mapper
-public interface MahjongRecordDoMapper extends BaseMapper<MahjongRecord> {
+public interface UserAssetMapper extends BaseMapper<UserAsset> {
 }

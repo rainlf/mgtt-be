@@ -1,12 +1,13 @@
 package com.rainlf.weixin.infra.wexin.service.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.rainlf.weixin.infra.wexin.model.Code2SessionResp;
+import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -31,7 +32,7 @@ public class WeixinServiceImpl implements WeixinService {
     private String code2Session;
 
     @Override
-    public Code2SessionResp code2Session(String code) {
+    public WeixinSession code2Session(String code) {
         log.info("code2Session, code: {}", code);
         Map<String, String> request = ImmutableMap.of(
                 "appid", appId,
@@ -39,7 +40,7 @@ public class WeixinServiceImpl implements WeixinService {
                 "js_code", code,
                 "grant_type", "authorization_code"
         );
-        Code2SessionResp resp = restTemplate.postForObject(code2Session, request, Code2SessionResp.class);
+        WeixinSession resp = restTemplate.postForObject(code2Session, request, WeixinSession.class);
         log.info("code2Session, resp: {}", resp);
 
         if (resp == null) {
@@ -48,6 +49,10 @@ public class WeixinServiceImpl implements WeixinService {
 
         if (resp.getErrcode() != 0) {
             throw new RuntimeException("code2Session error, resp: " + resp);
+        }
+
+        if (!resp.valid()) {
+            throw new RuntimeException("code2Session error, resp is invalid: " + resp);
         }
 
         return resp;

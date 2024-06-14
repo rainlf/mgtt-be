@@ -1,6 +1,6 @@
 package com.rainlf.weixin.infra.wexin.service;
 
-import com.rainlf.weixin.infra.wexin.model.Code2SessionResp;
+import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 
 /**
  * @author rain
@@ -8,6 +8,6 @@ import com.rainlf.weixin.infra.wexin.model.Code2SessionResp;
  */
 public interface WeixinService {
 
-    Code2SessionResp code2Session(String code);
+    WeixinSession code2Session(String code);
 
 }
