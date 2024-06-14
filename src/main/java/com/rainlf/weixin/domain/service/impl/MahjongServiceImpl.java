@@ -107,17 +107,16 @@ public class MahjongServiceImpl implements MahjongService {
         // handle record by group
         Map<String, List<MahjongRecord>> allRecordGroupMap = allRecordList.stream().collect(Collectors.groupingBy(MahjongRecord::getRoundId));
         for (List<MahjongRecord> roundList : allRecordGroupMap.values()) {
-            List<MahjongRecordInfo> resultItem = new ArrayList<>();
 
             // create record award info
             List<MahjongRecord> awardRecord = roundList.stream().filter(x -> Objects.equals(MahjongRecordType.fromString(x.getType()), MahjongRecordType.AWARD)).toList();
             if (!awardRecord.isEmpty()) {
-                resultItem.add(createMahjongRecordInfo(awardRecord, userList));
+                result.add(createMahjongRecordInfo(awardRecord, userList));
             }
 
             // create game or sport info
             List<MahjongRecord> noAwardList = roundList.stream().filter(x -> !Objects.equals(MahjongRecordType.fromString(x.getType()), MahjongRecordType.AWARD)).toList();
-            resultItem.add(createMahjongRecordInfo(noAwardList, userList));
+            result.add(createMahjongRecordInfo(noAwardList, userList));
         }
         return result;
     }

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author rain
@@ -28,7 +29,7 @@ public class MahjongRecordInfo {
     }
 
     public void checkValid() {
-        if (records.stream().mapToInt(Record::getScore).sum() != 0) {
+        if (Objects.equals(type, MahjongRecordType.GAME) && records.stream().mapToInt(Record::getScore).sum() != 0) {
             throw new RuntimeException("invalid record, score sum should be 0");
         }
     }
