@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author rain
  * @date 5/30/2024 10:48 AM
@@ -30,5 +32,11 @@ public class UserController {
         User user = ssoService.getCurrentUser();
         log.info("getCurrentUser:{}", user);
         return ApiResp.success(userService.getUserInfo(user));
+    }
+
+    @GetMapping("/all")
+    public ApiResp<List<UserInfo>> getAllUser() {
+        return ApiResp.success(userService.getAllUser());
+
     }
 }

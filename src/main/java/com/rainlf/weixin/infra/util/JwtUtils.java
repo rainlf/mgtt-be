@@ -10,8 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author rain
@@ -23,7 +25,7 @@ public class JwtUtils {
     /**
      * 过期时间(单位:秒)
      */
-    public static final int ACCESS_EXPIRE = 60;
+    public static final int ACCESS_EXPIRE = 1;
     /**
      * 加密算法
      */
@@ -60,7 +62,7 @@ public class JwtUtils {
     public static String generateToken(String openId) {
         // 令牌id
         String uuid = UUID.randomUUID().toString();
-        Date exprireDate = Date.from(Instant.now().plusSeconds(ACCESS_EXPIRE));
+        Date exprireDate = Date.from(Instant.now().plus(ACCESS_EXPIRE, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 // 设置头部信息header

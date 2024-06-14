@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,12 @@ public interface UserAssetMapper extends BaseMapper<UserAsset> {
 
     @Select("select * from weixin_user_asset where user_id = #{userId} ")
     Optional<UserAsset> findByUserId(@Param("userId") Integer userId);
+
+    @Select("<script>" +
+            "select * from weixin_user_asset where user_id in " +
+            "<foreach item='item' index='index' collection='userIds' open='('> separator=',' close=')'>" +
+            "{item}" +
+            "</foreach>" +
+            "</script> ")
+    List<UserAsset> findByUserIdIn(@Param("userIds") List<Integer> userIds);
 }

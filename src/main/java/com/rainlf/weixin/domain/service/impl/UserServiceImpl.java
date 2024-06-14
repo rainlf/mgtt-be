@@ -10,6 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * @author rain
  * @date 6/14/2024 6:57 PM
@@ -29,12 +34,35 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("user not found, id: " + user.getId());
         }
 
+        return createUserInfo(user, userAsset);
+    }
+
+    @Override
+    public List<UserInfo> getAllUser() {
+        List<User> userList = userMapper.findAll();
+        List<UserAsset> userAssetList = userAssetMapper.findByUserIdIn(userList.stream().map(User::getId).toList());
+        Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getId, x -> x));
+
+        return userList.stream()
+                .map(user -> {
+                    UserAsset userAsset = userAssetMap.get(user.getId());
+                    return createUserInfo(user, userAsset);
+                })
+                .sorted(Comparator.comparing(UserInfo::getCopperCoin))
+                .toList();
+    }
+
+    private UserInfo createUserInfo(User user, UserAsset userAsset) {
         UserInfo userInfo = new UserInfo();
-        userInfo.setNickname(user.getNickname());
-        userInfo.setAvatar(user.getAvatar());
-        userInfo.setCopperCoin(userAsset.getCopperCoin());
-        userInfo.setSilverCoin(userAsset.getSilverCoin());
-        userInfo.setGoldCoin(userAsset.getGoldCoin());
+        if (user != null) {
+            userInfo.setNickname(user.getNickname());
+            userInfo.setAvatar(user.getAvatar());
+        }
+        if (userAsset != null) {
+            userInfo.setCopperCoin(userAsset.getCopperCoin());
+            userInfo.setSilverCoin(userAsset.getSilverCoin());
+            userInfo.setGoldCoin(userAsset.getGoldCoin());
+        }
         return userInfo;
     }
 }
