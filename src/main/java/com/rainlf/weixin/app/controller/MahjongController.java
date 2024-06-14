@@ -29,8 +29,8 @@ public class MahjongController {
     }
 
     @GetMapping("/records")
-    public ApiResp<List<MahjongRecordInfo>> getRecords() {
-        log.info("getRecords");
-        return ApiResp.success(mahjongService.getRecords());
+    public ApiResp<List<MahjongRecordInfo>> getRecords(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+        log.info("getRecords, pageNumber: {}, pageSize: {}", pageNumber, pageSize);
+        return ApiResp.success(mahjongService.getRecords(pageNumber, pageSize));
     }
 }

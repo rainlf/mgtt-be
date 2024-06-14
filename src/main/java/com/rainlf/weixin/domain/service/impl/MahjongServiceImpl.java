@@ -12,6 +12,9 @@ import com.rainlf.weixin.infra.db.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,9 +98,13 @@ public class MahjongServiceImpl implements MahjongService {
     }
 
     @Override
-    public List<MahjongRecordInfo> getRecords() {
+    public List<MahjongRecordInfo> getRecords(Integer pageNumber, Integer pageSize) {
         List<MahjongRecordInfo> result = new ArrayList<>();
-        List<MahjongRecord> allRecordList = mahjongRecordRepository.findAll();
+
+        // find record pageable
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<MahjongRecord> allRecordPage = mahjongRecordRepository.findAll(pageable);
+        List<MahjongRecord> allRecordList = allRecordPage.getContent();
 
         // find user info
         Set<Integer> userIdList = allRecordList.stream().map(MahjongRecord::getUserId).collect(Collectors.toSet());

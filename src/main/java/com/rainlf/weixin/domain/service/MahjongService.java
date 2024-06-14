@@ -11,5 +11,5 @@ import java.util.List;
 public interface MahjongService {
     void saveRecord(MahjongRecordInfo mahjongRecordInfo);
 
-    List<MahjongRecordInfo> getRecords();
+    List<MahjongRecordInfo> getRecords(Integer pageNumber, Integer pageSize);
 }
