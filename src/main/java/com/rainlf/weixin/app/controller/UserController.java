@@ -1,8 +1,10 @@
 package com.rainlf.weixin.app.controller;
 
+
+import com.rainlf.weixin.infra.db.model.User;
+import com.rainlf.weixin.infra.sso.SsoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
+    @Autowired
+    public SsoService ssoService;
 
     @GetMapping("/current")
     public String current() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String xx = authentication.getName();
-        log.info("xx: {}", xx);
-
+        User user = ssoService.getCurrentUser();
+        log.info("xx: {}", user);
         return "current";
     }
 }

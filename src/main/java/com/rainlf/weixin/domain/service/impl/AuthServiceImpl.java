@@ -3,7 +3,7 @@ package com.rainlf.weixin.domain.service.impl;
 import com.rainlf.weixin.domain.service.AuthService;
 import com.rainlf.weixin.infra.db.mapper.UserMapper;
 import com.rainlf.weixin.infra.db.model.User;
-import com.rainlf.weixin.infra.security.JwtTokenService;
+import com.rainlf.weixin.infra.util.JwtUtils;
 import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,6 @@ public class AuthServiceImpl implements AuthService {
     private WeixinService weixinService;
     @Autowired
     private UserMapper userMapper;
-    @Autowired
-    private JwtTokenService jwtTokenService;
 
     @Override
     public String login(String code) {
@@ -43,6 +41,6 @@ public class AuthServiceImpl implements AuthService {
             userMapper.updateById(user);
         }
 
-        return jwtTokenService.generateToken(weixinSession.getOpenId());
+        return JwtUtils.generateToken(weixinSession.getOpenId());
     }
 }

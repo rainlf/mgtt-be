@@ -1,4 +1,4 @@
-package com.rainlf.weixin.infra.config;
+package com.rainlf.weixin.infra.http;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

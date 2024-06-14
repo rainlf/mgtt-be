@@ -16,7 +16,7 @@ public class AdviceController {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception exception) {
-        log.error("controller handleException", exception);
+        log.error("biz api error", exception);
         return ResponseEntity.internalServerError().body(exception.getMessage());
     }
 }
