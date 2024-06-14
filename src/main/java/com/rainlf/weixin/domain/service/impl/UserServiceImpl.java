@@ -53,6 +53,20 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    public UserInfo updateCurrentUser(User user, String nickname, String avatar) {
+        user.setNickname(nickname);
+        user.setAvatar(avatar);
+        userRepository.save(user);
+
+        Optional<UserAsset> userAssetOptional = userAssetRepository.findByUserId(user.getId());
+        if (userAssetOptional.isEmpty()) {
+            throw new RuntimeException("user asset not found, id: " + user.getId());
+        }
+
+        return createUserInfo(user, userAssetOptional.get());
+    }
+
     private UserInfo createUserInfo(User user, UserAsset userAsset) {
         UserInfo userInfo = new UserInfo();
         if (user != null) {

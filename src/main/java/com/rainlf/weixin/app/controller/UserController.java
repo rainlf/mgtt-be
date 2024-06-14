@@ -8,9 +8,7 @@ import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.sso.SsoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,8 +28,15 @@ public class UserController {
     @GetMapping("/current")
     public ApiResp<UserInfo> getCurrentUser() {
         User user = ssoService.getCurrentUser();
-        log.info("getCurrentUser:{}", user);
+        log.info("getCurrentUser, user: {}", user);
         return ApiResp.success(userService.getUserInfo(user));
+    }
+
+    @PostMapping("/current")
+    public ApiResp<UserInfo> updateCurrentUser(@RequestParam("nickname") String nickname, @RequestParam("avatar") String avatar) {
+        User user = ssoService.getCurrentUser();
+        log.info("updateCurrentUser, user: {}, nickname: {}, avatar: {}", user, nickname, avatar);
+        return ApiResp.success(userService.updateCurrentUser(user, nickname, avatar));
     }
 
     @GetMapping("/all")

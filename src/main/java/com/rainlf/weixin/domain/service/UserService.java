@@ -14,4 +14,7 @@ public interface UserService {
     UserInfo getUserInfo(User user);
 
     List<UserInfo> getAllUserInfo();
+
+
+    UserInfo updateCurrentUser(User user, String nickname, String avatar);
 }
