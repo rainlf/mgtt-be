@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class UserInfo {
+    private Integer id;
     private String nickname;
     private String avatar;
     private Integer copperCoin;

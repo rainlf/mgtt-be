@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     public UserInfo getUserInfo(User user) {
         Optional<UserAsset> userAssetOptional = userAssetRepository.findByUserId(user.getId());
         if (userAssetOptional.isEmpty()) {
-            throw new RuntimeException("user not found, id: " + user.getId());
+            throw new RuntimeException("user asset not found, id: " + user.getId());
         }
 
         return createUserInfo(user, userAssetOptional.get());
@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
     private UserInfo createUserInfo(User user, UserAsset userAsset) {
         UserInfo userInfo = new UserInfo();
         if (user != null) {
+            userInfo.setId(user.getId());
             userInfo.setNickname(user.getNickname());
             userInfo.setAvatar(user.getAvatar());
         }

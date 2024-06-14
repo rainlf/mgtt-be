@@ -1,9 +1,6 @@
 package com.rainlf.weixin.infra.db.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
  * @date 5/21/2024 7:28 AM
  */
 @Data
+@Entity
 @Table(name = "weixin_user")
 public class User {
     @Id
@@ -24,6 +22,8 @@ public class User {
     private String avatar;
     private boolean admin;
     private String sessionKey;
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
+    @Column(insertable = false, updatable = false)
     private LocalDateTime updateTime;
 }
