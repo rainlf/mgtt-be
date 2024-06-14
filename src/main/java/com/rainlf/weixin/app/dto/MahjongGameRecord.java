@@ -20,4 +20,10 @@ public class MahjongGameRecord {
         private Integer userId;
         private Integer score;
     }
+
+    public void checkValid() {
+        if (records.stream().mapToInt(Record::getScore).sum() != 0) {
+            throw new RuntimeException("invalid record, score sum should be 0");
+        }
+    }
 }

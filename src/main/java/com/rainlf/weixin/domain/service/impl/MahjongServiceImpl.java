@@ -1,6 +1,7 @@
 package com.rainlf.weixin.domain.service.impl;
 
 import com.rainlf.weixin.app.dto.MahjongGameRecord;
+import com.rainlf.weixin.domain.model.MahjongRecordType;
 import com.rainlf.weixin.domain.service.MahjongService;
 import com.rainlf.weixin.infra.db.model.MahjongRecord;
 import com.rainlf.weixin.infra.db.model.UserAsset;
@@ -37,19 +38,22 @@ public class MahjongServiceImpl implements MahjongService {
         userIds.add(mahjongGameRecord.getRecorderId());
 
         List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userIds);
-        Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getId, userAsset -> userAsset));
+        Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getUserId, userAsset -> userAsset));
 
         // modify user asset
         mahjongGameRecord.getRecords().forEach(record -> {
             UserAsset userAsset = userAssetMap.get(record.getUserId());
+            log.info("saveRecord: userId: {}, score: {}", userAsset.getUserId(), record.getScore());
             userAsset.setCopperCoin(userAsset.getCopperCoin() + record.getScore());
         });
         // award recoder
         Integer recorderAward = new Random().nextInt(randomMax) + 1;
         UserAsset recorderAsset = userAssetMap.get(mahjongGameRecord.getRecorderId());
+        log.info("saveRecord: userId: {}, award: {}", mahjongGameRecord.getRecorderId(), recorderAward);
         recorderAsset.setCopperCoin(recorderAsset.getCopperCoin() + recorderAward);
         // save db
         userAssetRepository.saveAll(userAssetList);
+        log.info("saveRecord: save user asset");
 
         // save record
         String roundId = UUID.randomUUID().toString().replaceAll("-", "");
@@ -63,16 +67,17 @@ public class MahjongServiceImpl implements MahjongService {
                     mahjongRecord.setUserId(record.getUserId());
                     mahjongRecord.setScore(record.getScore());
                     return mahjongRecord;
-                }).toList();
+                }).collect(Collectors.toList());
 
         // add record award record
         MahjongRecord mahjongRecord = new MahjongRecord();
         mahjongRecord.setRoundId(roundId);
         mahjongRecord.setRecorderId(mahjongGameRecord.getRecorderId());
-        mahjongRecord.setType(mahjongGameRecord.getType().toString());
+        mahjongRecord.setType(MahjongRecordType.AWARD.toString());
         mahjongRecord.setUserId(mahjongGameRecord.getRecorderId());
         mahjongRecord.setScore(recorderAward);
         mahjongRecordList.add(mahjongRecord);
         mahjongRecordRepository.saveAll(mahjongRecordList);
+        log.info("saveRecord: save mahjong record");
     }
 }

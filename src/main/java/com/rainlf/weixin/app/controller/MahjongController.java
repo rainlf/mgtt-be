@@ -24,6 +24,7 @@ public class MahjongController {
     @PostMapping("/reocrd")
     public ApiResp<Void> saveRecord(@RequestBody MahjongGameRecord mahjongGameRecord) {
         log.info("saveRecord, mahjongGameRecord: {}", mahjongGameRecord);
+        mahjongGameRecord.checkValid();
         mahjongService.saveRecord(mahjongGameRecord);
         return ApiResp.success();
     }
