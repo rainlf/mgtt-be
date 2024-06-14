@@ -33,7 +33,7 @@ public class JwtUtils {
      * 一旦客户端得知这个secret, 那就意味着客户端是可以自我签发jwt了。
      * 应该大于等于 256位(长度32及以上的字符串)，并且是随机的字符串
      */
-    private final static String SECRET = UUID.randomUUID().toString();
+    private final static String SECRET = "RainRainRainRainRainRainRainRain";
     /**
      * 秘钥实例
      */
