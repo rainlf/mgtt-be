@@ -1,6 +1,9 @@
 package com.rainlf.weixin.app.controller;
 
 
+import com.rainlf.weixin.app.dto.ApiResp;
+import com.rainlf.weixin.app.dto.UserInfo;
+import com.rainlf.weixin.domain.service.UserService;
 import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.sso.SsoService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     public SsoService ssoService;
+    @Autowired
+    public UserService userService;
 
     @GetMapping("/current")
-    public String current() {
+    public ApiResp<UserInfo> getCurrentUser() {
         User user = ssoService.getCurrentUser();
-        log.info("xx: {}", user);
-        return "current";
+        log.info("getCurrentUser:{}", user);
+        return ApiResp.success(userService.getUserInfo(user));
     }
 }
