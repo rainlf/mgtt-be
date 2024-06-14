@@ -36,7 +36,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         String token = getTokenFromRequest(request);
 
         // 校验 token
-        if (StringUtils.hasText(token) && JwtUtils.validateToken(token)) {
+        if (StringUtils.hasText(token)) {
             // 从 token 获取 openId
             String openId = JwtUtils.getOpenId(token);
 
