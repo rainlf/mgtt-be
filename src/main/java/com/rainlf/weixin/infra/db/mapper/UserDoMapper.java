@@ -1,7 +1,7 @@
 package com.rainlf.weixin.infra.db.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.rainlf.weixin.infra.db.model.UserDo;
+import com.rainlf.weixin.infra.db.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 6/13/2024 10:34 PM
  */
 @Mapper
-public interface UserDoMapper extends BaseMapper<UserDo> {
+public interface UserDoMapper extends BaseMapper<User> {
 }

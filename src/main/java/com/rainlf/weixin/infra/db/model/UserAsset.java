@@ -12,16 +12,14 @@ import java.time.LocalDateTime;
  * @date 5/21/2024 7:28 AM
  */
 @Data
-@TableName(value = "weixin_user")
-public class UserDo {
+@TableName(value = "weixin_user_asset")
+public class UserAsset {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String openId;
-    private String unionId;
-    private String nickname;
-    private String avatar;
-    private Boolean admin;
-    private String sessionKey;
+    private Integer userId;
+    private Integer copperCoin;
+    private Integer silverCoin;
+    private Integer goldCoin;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

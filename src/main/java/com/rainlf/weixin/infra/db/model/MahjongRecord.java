@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName(value = "weixin_mahjong_record")
-public class MahjongRecordDo {
+public class MahjongRecord {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String roundId;
