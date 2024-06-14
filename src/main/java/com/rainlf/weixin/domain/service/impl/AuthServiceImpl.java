@@ -1,8 +1,8 @@
 package com.rainlf.weixin.domain.service.impl;
 
 import com.rainlf.weixin.domain.service.AuthService;
-import com.rainlf.weixin.infra.db.mapper.UserMapper;
 import com.rainlf.weixin.infra.db.model.User;
+import com.rainlf.weixin.infra.db.repository.UserRepository;
 import com.rainlf.weixin.infra.util.JwtUtils;
 import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
@@ -22,24 +22,24 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private WeixinService weixinService;
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     @Override
     public String login(String code) {
         WeixinSession weixinSession = weixinService.code2Session(code);
 
-        Optional<User> userOptional = userMapper.findByOpenId(weixinSession.getOpenId());
+        Optional<User> userOptional = userRepository.findByOpenId(weixinSession.getOpenId());
+        User user;
         if (userOptional.isEmpty()) {
-            User user = new User();
+            user = new User();
             user.setOpenId(weixinSession.getOpenId());
             user.setUnionId(weixinSession.getUnionId());
             user.setSessionKey(weixinSession.getSessionKey());
-            userMapper.insert(user);
         } else {
-            User user = userOptional.get();
+            user = userOptional.get();
             user.setSessionKey(weixinSession.getSessionKey());
-            userMapper.updateById(user);
         }
+        userRepository.save(user);
 
         return JwtUtils.generateToken(weixinSession.getOpenId());
     }

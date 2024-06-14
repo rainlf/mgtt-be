@@ -1,8 +1,9 @@
 package com.rainlf.weixin.infra.db.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,9 +13,10 @@ import java.time.LocalDateTime;
  * @date 5/21/2024 7:28 AM
  */
 @Data
-@TableName(value = "weixin_mahjong_record")
+@Table(name = "weixin_mahjong_record")
 public class MahjongRecord {
-    @TableId(type = IdType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String roundId;
     private Integer recorderId;

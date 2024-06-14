@@ -36,7 +36,6 @@ public class UserController {
 
     @GetMapping("/all")
     public ApiResp<List<UserInfo>> getAllUser() {
-        return ApiResp.success(userService.getAllUser());
-
+        return ApiResp.success(userService.getAllUserInfo());
     }
 }

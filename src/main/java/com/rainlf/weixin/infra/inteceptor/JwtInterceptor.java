@@ -1,6 +1,6 @@
 package com.rainlf.weixin.infra.inteceptor;
 
-import com.rainlf.weixin.infra.db.mapper.UserMapper;
+import com.rainlf.weixin.infra.db.repository.UserRepository;
 import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.sso.SsoService;
 import com.rainlf.weixin.infra.util.JwtUtils;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userRepository;
     @Autowired
     private SsoService ssoService;
 
@@ -40,7 +40,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             // 从 token 获取 openId
             String openId = JwtUtils.getOpenId(token);
 
-            User user = userMapper.findByOpenId(openId).orElseThrow(() -> new RuntimeException("invalid jwt token"));
+            User user = userRepository.findByOpenId(openId).orElseThrow(() -> new RuntimeException("invalid jwt token"));
             ssoService.setCurrentUser(user);
             return true;
         } else {

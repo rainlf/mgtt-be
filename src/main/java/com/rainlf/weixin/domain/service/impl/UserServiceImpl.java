@@ -2,10 +2,10 @@ package com.rainlf.weixin.domain.service.impl;
 
 import com.rainlf.weixin.app.dto.UserInfo;
 import com.rainlf.weixin.domain.service.UserService;
-import com.rainlf.weixin.infra.db.mapper.UserAssetMapper;
-import com.rainlf.weixin.infra.db.mapper.UserMapper;
 import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.db.model.UserAsset;
+import com.rainlf.weixin.infra.db.repository.UserAssetRepository;
+import com.rainlf.weixin.infra.db.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -23,24 +24,24 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userRepository;
     @Autowired
-    private UserAssetMapper userAssetMapper;
+    private UserAssetRepository userAssetRepository;
 
     @Override
     public UserInfo getUserInfo(User user) {
-        UserAsset userAsset = userAssetMapper.selectById(user.getId());
-        if (userAsset == null) {
+        Optional<UserAsset> userAssetOptional = userAssetRepository.findByUserId(user.getId());
+        if (userAssetOptional.isEmpty()) {
             throw new RuntimeException("user not found, id: " + user.getId());
         }
 
-        return createUserInfo(user, userAsset);
+        return createUserInfo(user, userAssetOptional.get());
     }
 
     @Override
-    public List<UserInfo> getAllUser() {
-        List<User> userList = userMapper.findAll();
-        List<UserAsset> userAssetList = userAssetMapper.findByUserIdIn(userList.stream().map(User::getId).toList());
+    public List<UserInfo> getAllUserInfo() {
+        List<User> userList = userRepository.findAll();
+        List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userList.stream().map(User::getId).toList());
         Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getId, x -> x));
 
         return userList.stream()

@@ -13,5 +13,5 @@ public interface UserService {
 
     UserInfo getUserInfo(User user);
 
-    List<UserInfo> getAllUser();
+    List<UserInfo> getAllUserInfo();
 }

@@ -7,6 +7,7 @@ CREATE TABLE `weixin_user`
     `nickname`    varchar(128),
     `avatar`      varchar(512),
     `admin`       tinyint      not null default 0,
+    `is_deleted`  tinyint      not null default 0,
     `session_key` varchar(128),
     `create_time` datetime              default current_timestamp,
     `update_time` datetime              default current_timestamp on update current_timestamp
