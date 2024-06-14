@@ -8,7 +8,6 @@ import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

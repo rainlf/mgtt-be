@@ -1,16 +1,14 @@
 package com.rainlf.weixin.infra.wexin.service.impl;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.rainlf.weixin.infra.util.JsonUtils;
 import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 /**
  * @author rain
@@ -29,26 +27,24 @@ public class WeixinServiceImpl implements WeixinService {
     private String secret;
 
     @Value("${weixin.api.code2Session}")
-    private String code2Session;
+    private String code2SessionUrl;
 
     @Override
     public WeixinSession code2Session(String code) {
         log.info("code2Session, code: {}", code);
-        Map<String, String> request = ImmutableMap.of(
-                "appid", appId,
-                "secret", secret,
-                "js_code", code,
-                "grant_type", "authorization_code"
-        );
-        WeixinSession resp = restTemplate.postForObject(code2Session, request, WeixinSession.class);
-        log.info("code2Session, resp: {}", resp);
+        StringBuilder sb = new StringBuilder();
+        sb.append(code2SessionUrl)
+                .append("?").append("appid").append("=").append(appId)
+                .append("&").append("secret").append("=").append(secret)
+                .append("&").append("js_code").append("=").append(code)
+                .append("&").append("grant_type").append("=").append("authorization_code");
+
+        String respStr = restTemplate.getForObject(sb.toString(), String.class);
+        log.info("code2Session, resp: {}", respStr);
+        WeixinSession resp = JsonUtils.fromJson(respStr, WeixinSession.class);
 
         if (resp == null) {
             throw new RuntimeException("code2Session error, resp is null");
-        }
-
-        if (resp.getErrcode() != 0) {
-            throw new RuntimeException("code2Session error, resp: " + resp);
         }
 
         if (!resp.valid()) {

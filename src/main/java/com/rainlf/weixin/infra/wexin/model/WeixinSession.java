@@ -23,7 +23,6 @@ public class WeixinSession {
 
     public boolean valid() {
         return StringUtils.hasText(openId)
-                && StringUtils.hasText(unionId)
                 && StringUtils.hasText(sessionKey);
     }
 }

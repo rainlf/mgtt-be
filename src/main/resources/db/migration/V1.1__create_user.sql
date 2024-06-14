@@ -3,7 +3,7 @@ CREATE TABLE `weixin_user`
 
     `id`          int          not null auto_increment primary key,
     `open_id`     varchar(128) not null unique,
-    `union_id`    varchar(128) not null unique,
+    `union_id`    varchar(128),
     `nickname`    varchar(128),
     `avatar`      varchar(512),
     `admin`       tinyint      not null default 0,
