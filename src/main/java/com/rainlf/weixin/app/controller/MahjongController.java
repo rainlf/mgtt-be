@@ -1,14 +1,13 @@
 package com.rainlf.weixin.app.controller;
 
 import com.rainlf.weixin.app.dto.ApiResp;
-import com.rainlf.weixin.app.dto.MahjongGameRecord;
+import com.rainlf.weixin.app.dto.MahjongRecordInfo;
 import com.rainlf.weixin.domain.service.MahjongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author rain
@@ -22,11 +21,16 @@ public class MahjongController {
     private MahjongService mahjongService;
 
     @PostMapping("/reocrd")
-    public ApiResp<Void> saveRecord(@RequestBody MahjongGameRecord mahjongGameRecord) {
-        log.info("saveRecord, mahjongGameRecord: {}", mahjongGameRecord);
-        mahjongGameRecord.checkValid();
-        mahjongService.saveRecord(mahjongGameRecord);
+    public ApiResp<Void> saveRecord(@RequestBody MahjongRecordInfo mahjongRecordInfo) {
+        log.info("saveRecord, mahjongGameRecord: {}", mahjongRecordInfo);
+        mahjongRecordInfo.checkValid();
+        mahjongService.saveRecord(mahjongRecordInfo);
         return ApiResp.success();
     }
 
+    @GetMapping("/records")
+    public ApiResp<List<MahjongRecordInfo>> getRecords() {
+        log.info("getRecords");
+        return ApiResp.success(mahjongService.getRecords());
+    }
 }

@@ -8,4 +8,14 @@ public enum MahjongRecordType {
     GAME,
     SPORT,
     AWARD,
+    ;
+
+    public static MahjongRecordType fromString(String value) {
+        for (MahjongRecordType type : MahjongRecordType.values()) {
+            if (type.toString().equals(value)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }
