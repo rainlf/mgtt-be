@@ -34,8 +34,11 @@ public class MahjongServiceImpl implements MahjongService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveRecord(MahjongGameRecord mahjongGameRecord) {
+        boolean game = Objects.equals(mahjongGameRecord.getType(), MahjongRecordType.GAME);
         Set<Integer> userIds = mahjongGameRecord.getRecords().stream().map(MahjongGameRecord.Record::getUserId).collect(Collectors.toSet());
-        userIds.add(mahjongGameRecord.getRecorderId());
+        if (game) {
+            userIds.add(mahjongGameRecord.getRecorderId());
+        }
 
         List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userIds);
         Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getUserId, userAsset -> userAsset));
@@ -47,10 +50,13 @@ public class MahjongServiceImpl implements MahjongService {
             userAsset.setCopperCoin(userAsset.getCopperCoin() + record.getScore());
         });
         // award recoder
-        Integer recorderAward = new Random().nextInt(randomMax) + 1;
-        UserAsset recorderAsset = userAssetMap.get(mahjongGameRecord.getRecorderId());
-        log.info("saveRecord: userId: {}, award: {}", mahjongGameRecord.getRecorderId(), recorderAward);
-        recorderAsset.setCopperCoin(recorderAsset.getCopperCoin() + recorderAward);
+        int recorderAward = 0;
+        if (game) {
+            recorderAward = new Random().nextInt(randomMax) + 1;
+            UserAsset recorderAsset = userAssetMap.get(mahjongGameRecord.getRecorderId());
+            log.info("saveRecord: userId: {}, award: {}", mahjongGameRecord.getRecorderId(), recorderAward);
+            recorderAsset.setCopperCoin(recorderAsset.getCopperCoin() + recorderAward);
+        }
         // save db
         userAssetRepository.saveAll(userAssetList);
         log.info("saveRecord: save user asset");
@@ -70,13 +76,16 @@ public class MahjongServiceImpl implements MahjongService {
                 }).collect(Collectors.toList());
 
         // add record award record
-        MahjongRecord mahjongRecord = new MahjongRecord();
-        mahjongRecord.setRoundId(roundId);
-        mahjongRecord.setRecorderId(mahjongGameRecord.getRecorderId());
-        mahjongRecord.setType(MahjongRecordType.AWARD.toString());
-        mahjongRecord.setUserId(mahjongGameRecord.getRecorderId());
-        mahjongRecord.setScore(recorderAward);
-        mahjongRecordList.add(mahjongRecord);
+        if (game) {
+            MahjongRecord mahjongRecord = new MahjongRecord();
+            mahjongRecord.setRoundId(roundId);
+            mahjongRecord.setRecorderId(mahjongGameRecord.getRecorderId());
+            mahjongRecord.setType(MahjongRecordType.AWARD.toString());
+            mahjongRecord.setUserId(mahjongGameRecord.getRecorderId());
+            mahjongRecord.setScore(recorderAward);
+            mahjongRecordList.add(mahjongRecord);
+        }
+
         mahjongRecordRepository.saveAll(mahjongRecordList);
         log.info("saveRecord: save mahjong record");
     }
