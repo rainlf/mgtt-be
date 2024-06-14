@@ -4,6 +4,7 @@ import com.rainlf.weixin.infra.db.model.UserAsset;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,5 @@ public interface UserAssetRepository extends JpaRepository<UserAsset, Integer> {
 
     Optional<UserAsset> findByUserId(Integer userId);
 
-    List<UserAsset> findByUserIdIn(List<Integer> userIds);
+    List<UserAsset> findByUserIdIn(Iterable<Integer> userIds);
 }

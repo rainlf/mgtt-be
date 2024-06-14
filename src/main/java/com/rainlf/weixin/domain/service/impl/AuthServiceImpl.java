@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private UserAssetRepository userAssetRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String login(String code) {
         WeixinSession weixinSession = weixinService.code2Session(code);
 
