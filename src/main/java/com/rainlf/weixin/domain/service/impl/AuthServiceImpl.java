@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         WeixinSession weixinSession = weixinService.code2Session(code);
 
         Optional<User> userOptional = userRepository.findByOpenId(weixinSession.getOpenId());
-        User user = saveUser(userOptional.get(), weixinSession);
+        User user = saveUser(userOptional.orElse(null), weixinSession);
         return JwtUtils.generateToken(user.getOpenId());
     }
 
