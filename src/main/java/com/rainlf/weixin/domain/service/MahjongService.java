@@ -11,7 +11,7 @@ import java.util.List;
  * @date 6/14/2024 8:32 PM
  */
 public interface MahjongService {
-    void saveRecord(RoundInfoDto roundInfoDto);
+    void saveRoundInfo(RoundInfoDto roundInfoDto);
 
     void saveSportInfo(SportInfoDto sportInfoDto);
 

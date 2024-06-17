@@ -25,11 +25,11 @@ public class MahjongController {
     @PostMapping("/round")
     public ApiResp<Void> saveRoundInfo(@RequestBody RoundInfoDto roundInfoDto) {
         log.info("saveRoundInfo, roundInfo: {}", roundInfoDto);
-        mahjongService.saveRecord(roundInfoDto);
+        mahjongService.saveRoundInfo(roundInfoDto);
         return ApiResp.success();
     }
 
-    @GetMapping("/sport")
+    @PostMapping("/sport")
     public ApiResp<Void> saveSportInfo(@RequestBody SportInfoDto sportInfoDto) {
         log.info("saveSportInfo, sportInfo: {}", sportInfoDto);
         mahjongService.saveSportInfo(sportInfoDto);

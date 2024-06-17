@@ -46,7 +46,7 @@ public class MahjongServiceImpl implements MahjongService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecord(RoundInfoDto roundInfoDto) {
+    public void saveRoundInfo(RoundInfoDto roundInfoDto) {
         MahjongRound mahjongRound = new MahjongRound();
         mahjongRound.setRecorderId(roundInfoDto.getRecorderId());
         mahjongRound.setBaseFan(roundInfoDto.getBaseFan());
@@ -79,6 +79,7 @@ public class MahjongServiceImpl implements MahjongService {
         log.info("save round detail success");
 
         int award = new Random().nextInt(randomMax) + 1;
+        log.info("recorder info, userId: {}, score: {}", roundInfoDto.getRecorderId(), award);
         saveRecorderDetail(mahjongRound.getId(), roundInfoDto.getRecorderId(), award, MahjongDetailType.RECORD);
         log.info("save recorder detail success");
     }
@@ -86,8 +87,9 @@ public class MahjongServiceImpl implements MahjongService {
 
     @Override
     public void saveSportInfo(SportInfoDto sportInfoDto) {
-        saveRecorderDetail(null, sportInfoDto.getSportNumber(), sportInfoDto.getSportNumber(), MahjongDetailType.SPORT);
-        log.info("save recorder detail success");
+        log.info("sport info, userId: {}, score: {}", sportInfoDto.getSporterId(), sportInfoDto.getSportNumber());
+        saveRecorderDetail(null, sportInfoDto.getSporterId(), sportInfoDto.getSportNumber(), MahjongDetailType.SPORT);
+        log.info("save sporter detail success");
     }
 
     @Override

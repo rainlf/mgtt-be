@@ -45,7 +45,7 @@ CREATE TABLE `weixin_mahjong_round`
 CREATE TABLE `weixin_mahjong_round_detail`
 (
     `id`          int unsigned not null auto_increment primary key,
-    `round_id`    int unsigned not null,
+    `round_id`    int unsigned,
     `type`        varchar(128) not null,
     `user_id`     int unsigned not null,
     `score`       int          not null,
