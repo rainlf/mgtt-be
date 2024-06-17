@@ -21,7 +21,6 @@ public class MahjongRoundDetail {
     private Integer userId;
     private Integer score;
     private String site;
-
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)

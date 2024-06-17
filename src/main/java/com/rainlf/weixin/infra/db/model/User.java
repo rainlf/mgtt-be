@@ -20,8 +20,11 @@ public class User {
     private String unionId;
     private String nickname;
     private String avatar;
-    private boolean admin;
     private String sessionKey;
+    @Column(insertable = false)
+    private boolean isAdmin;
+    @Column(insertable = false)
+    private boolean isDeleted;
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)
