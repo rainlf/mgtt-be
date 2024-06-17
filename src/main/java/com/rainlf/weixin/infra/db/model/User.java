@@ -2,6 +2,9 @@ package com.rainlf.weixin.infra.db.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "weixin_user")
+@SQLRestriction("is_deleted = 0")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

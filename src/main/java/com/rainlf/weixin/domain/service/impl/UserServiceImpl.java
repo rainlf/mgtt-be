@@ -1,6 +1,6 @@
 package com.rainlf.weixin.domain.service.impl;
 
-import com.rainlf.weixin.app.dto.UserInfo;
+import com.rainlf.weixin.app.dto.UserInfoDto;
 import com.rainlf.weixin.domain.service.UserService;
 import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.db.model.UserAsset;
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private UserAssetRepository userAssetRepository;
 
     @Override
-    public UserInfo getUserInfo(User user) {
+    public UserInfoDto getUserInfo(User user) {
         Optional<UserAsset> userAssetOptional = userAssetRepository.findByUserId(user.getId());
         if (userAssetOptional.isEmpty()) {
             throw new RuntimeException("user asset not found, id: " + user.getId());
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserInfo> getAllUserInfo() {
+    public List<UserInfoDto> getAllUserInfo() {
         List<User> userList = userRepository.findAll();
         List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userList.stream().map(User::getId).toList());
         Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getId, x -> x));
@@ -49,12 +49,12 @@ public class UserServiceImpl implements UserService {
                     UserAsset userAsset = userAssetMap.get(user.getId());
                     return createUserInfo(user, userAsset);
                 })
-                .sorted(Comparator.comparing(UserInfo::getCopperCoin))
+                .sorted(Comparator.comparing(UserInfoDto::getCopperCoin))
                 .toList();
     }
 
     @Override
-    public UserInfo updateCurrentUser(User user, String nickname, String avatar) {
+    public UserInfoDto updateCurrentUser(User user, String nickname, String avatar) {
         user.setNickname(nickname);
         user.setAvatar(avatar);
         userRepository.save(user);
@@ -67,18 +67,18 @@ public class UserServiceImpl implements UserService {
         return createUserInfo(user, userAssetOptional.get());
     }
 
-    private UserInfo createUserInfo(User user, UserAsset userAsset) {
-        UserInfo userInfo = new UserInfo();
+    private UserInfoDto createUserInfo(User user, UserAsset userAsset) {
+        UserInfoDto userInfoDto = new UserInfoDto();
         if (user != null) {
-            userInfo.setId(user.getId());
-            userInfo.setNickname(user.getNickname());
-            userInfo.setAvatar(user.getAvatar());
+            userInfoDto.setId(user.getId());
+            userInfoDto.setNickname(user.getNickname());
+            userInfoDto.setAvatar(user.getAvatar());
         }
         if (userAsset != null) {
-            userInfo.setCopperCoin(userAsset.getCopperCoin());
-            userInfo.setSilverCoin(userAsset.getSilverCoin());
-            userInfo.setGoldCoin(userAsset.getGoldCoin());
+            userInfoDto.setCopperCoin(userAsset.getCopperCoin());
+            userInfoDto.setSilverCoin(userAsset.getSilverCoin());
+            userInfoDto.setGoldCoin(userAsset.getGoldCoin());
         }
-        return userInfo;
+        return userInfoDto;
     }
 }

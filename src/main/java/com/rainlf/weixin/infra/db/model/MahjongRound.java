@@ -1,12 +1,10 @@
 package com.rainlf.weixin.infra.db.model;
 
-import com.rainlf.weixin.app.dto.RoundInfo;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author rain

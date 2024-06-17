@@ -1,6 +1,6 @@
 package com.rainlf.weixin.domain.service;
 
-import com.rainlf.weixin.app.dto.UserInfo;
+import com.rainlf.weixin.app.dto.UserInfoDto;
 import com.rainlf.weixin.infra.db.model.User;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
  */
 public interface UserService {
 
-    UserInfo getUserInfo(User user);
+    UserInfoDto getUserInfo(User user);
 
-    List<UserInfo> getAllUserInfo();
+    List<UserInfoDto> getAllUserInfo();
 
 
-    UserInfo updateCurrentUser(User user, String nickname, String avatar);
+    UserInfoDto updateCurrentUser(User user, String nickname, String avatar);
 }

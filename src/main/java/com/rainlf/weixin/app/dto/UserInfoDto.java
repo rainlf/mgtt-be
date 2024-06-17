@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 6/14/2024 6:54 PM
  */
 @Data
-public class UserInfo {
+public class UserInfoDto {
     private Integer id;
     private String nickname;
     private String avatar;

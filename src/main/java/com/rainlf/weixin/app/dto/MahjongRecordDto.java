@@ -1,6 +1,6 @@
 package com.rainlf.weixin.app.dto;
 
-import com.rainlf.weixin.domain.model.RecordType;
+import com.rainlf.weixin.domain.model.MahjongDetailType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,8 +12,8 @@ import java.util.Objects;
  * @date 6/14/2024 8:23 PM
  */
 @Data
-public class MahjongRecord {
-    private RecordType type;
+public class MahjongRecordDto {
+    private MahjongDetailType type;
     private Integer recorderId;
     private String recorderName;
     private String recorderAvatar;
@@ -29,7 +29,7 @@ public class MahjongRecord {
     }
 
     public void checkValid() {
-        if (Objects.equals(type, RecordType.GAME) && recordItems.stream().mapToInt(RecordItem::getScore).sum() != 0) {
+        if (Objects.equals(type, MahjongDetailType.GAME) && recordItems.stream().mapToInt(RecordItem::getScore).sum() != 0) {
             throw new RuntimeException("invalid record, score sum should be 0");
         }
     }
