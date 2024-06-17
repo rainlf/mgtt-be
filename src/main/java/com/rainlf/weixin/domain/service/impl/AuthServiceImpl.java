@@ -35,9 +35,23 @@ public class AuthServiceImpl implements AuthService {
         WeixinSession weixinSession = weixinService.code2Session(code);
 
         Optional<User> userOptional = userRepository.findByOpenId(weixinSession.getOpenId());
+        User user = saveUser(userOptional.get(), weixinSession);
+        return JwtUtils.generateToken(user.getOpenId());
+    }
 
-        if (userOptional.isEmpty()) {
-            User user = new User();
+    @Override
+    public String mockLogin() {
+        WeixinSession mockSession = new WeixinSession();
+        mockSession.setOpenId("mock-open-ip");
+        mockSession.setOpenId("mock-union-ip");
+        mockSession.setSessionKey("mock, I'm a mock session key");
+        User user = saveUser(null, mockSession);
+        return JwtUtils.generateToken(user.getOpenId());
+    }
+
+    private User saveUser(User user, WeixinSession weixinSession) {
+        if (user == null) {
+            user = new User();
             user.setOpenId(weixinSession.getOpenId());
             user.setUnionId(weixinSession.getUnionId());
             user.setSessionKey(weixinSession.getSessionKey());
@@ -47,11 +61,9 @@ public class AuthServiceImpl implements AuthService {
             userAsset.setUserId(user.getId());
             userAssetRepository.save(userAsset);
         } else {
-            User user = userOptional.get();
             user.setSessionKey(weixinSession.getSessionKey());
             userRepository.save(user);
         }
-
-        return JwtUtils.generateToken(weixinSession.getOpenId());
+        return user;
     }
 }

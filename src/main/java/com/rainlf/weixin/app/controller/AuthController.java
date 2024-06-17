@@ -22,4 +22,9 @@ public class AuthController {
         log.info("login code:{}", code);
         return ApiResp.success(authService.login(code));
     }
+
+    @PostMapping("/mockLogin")
+    public ApiResp<String> mockLogin() {
+        return ApiResp.success(authService.mockLogin());
+    }
 }
