@@ -3,6 +3,7 @@ package com.rainlf.weixin.app.controller;
 import com.rainlf.weixin.app.dto.ApiResp;
 import com.rainlf.weixin.app.dto.MahjongRecordDto;
 import com.rainlf.weixin.app.dto.RoundInfoDto;
+import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.domain.service.MahjongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,17 @@ public class MahjongController {
     @Autowired
     private MahjongService mahjongService;
 
-    @PostMapping("/reocrd")
-    public ApiResp<Void> saveRecord(@RequestBody RoundInfoDto roundInfoDto) {
-        log.info("saveRecord, roundInfo: {}", roundInfoDto);
+    @PostMapping("/round")
+    public ApiResp<Void> saveRoundInfo(@RequestBody RoundInfoDto roundInfoDto) {
+        log.info("saveRoundInfo, roundInfo: {}", roundInfoDto);
         mahjongService.saveRecord(roundInfoDto);
         return ApiResp.success();
+    }
+
+    @GetMapping("/sport")
+    public ApiResp<Void> saveSportInfo(@RequestBody SportInfoDto sportInfoDto) {
+        log.info("saveSportInfo, sportInfo: {}", sportInfoDto);
+        return ApiResp.success(mahjongService.saveSportInfo(sportInfoDto));
     }
 
     @GetMapping("/records")

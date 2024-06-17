@@ -2,6 +2,7 @@ package com.rainlf.weixin.domain.service.impl;
 
 import com.rainlf.weixin.app.dto.MahjongRecordDto;
 import com.rainlf.weixin.app.dto.RoundInfoDto;
+import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.domain.model.MahjongDetailType;
 import com.rainlf.weixin.domain.model.MahjongSiteType;
 import com.rainlf.weixin.domain.service.MahjongService;
@@ -76,23 +77,36 @@ public class MahjongServiceImpl implements MahjongService {
         saveRoundDetail(users, socreMap, roundInfoDto.getRoundId(), roundInfoDto.getSiteMap());
         log.info("save round detail success");
 
-
+        int award = new Random().nextInt(randomMax) + 1;
+        saveRecorderDetail(mahjongRound.getId(), roundInfoDto.getRecorderId(), award, MahjongDetailType.RECORD);
+        log.info("save recorder detail success");
     }
 
-    private void saveRecorderDetail(Integer roundId, Integer recorderId) {
-        User user = userRepository.findById(recorderId).orElseThrow();
-        UserAsset userAsset = userAssetRepository.findByUserId(recorderId).orElseThrow();
 
-        int award = new Random().nextInt(randomMax) + 1;
+    @Override
+    public void saveSportInfo(SportInfoDto sportInfoDto) {
+        saveRecorderDetail(null, sportInfoDto.getSportNumber(), sportInfoDto.getSportNumber(), MahjongDetailType.SPORT);
+        log.info("save recorder detail success");
+    }
 
-        userAsset.setCopperCoin(userAsset.getCopperCoin() + award);
+    @Override
+    public List<MahjongRecordDto> getRecords(Integer pageNumber, Integer pageSize) {
+
+        return null;
+    }
+
+    private void saveRecorderDetail(Integer roundId, Integer userId, Integer score, MahjongDetailType type) {
+        User user = userRepository.findById(userId).orElseThrow();
+        UserAsset userAsset = userAssetRepository.findByUserId(userId).orElseThrow();
+
+        userAsset.setCopperCoin(userAsset.getCopperCoin() + score);
         userAssetRepository.save(userAsset);
 
         MahjongRoundDetail detail = new MahjongRoundDetail();
         detail.setRoundId(roundId);
-        detail.setType(MahjongDetailType.RECORD.toString());
-        detail.setUserId(recorderId);
-        detail.setScore(award);
+        detail.setType(type.toString());
+        detail.setUserId(userId);
+        detail.setScore(score);
         mahjongRoundDetailRepository.save(detail);
     }
 
@@ -128,9 +142,4 @@ public class MahjongServiceImpl implements MahjongService {
         return fan;
     }
 
-    @Override
-    public List<MahjongRecordDto> getRecords(Integer pageNumber, Integer pageSize) {
-
-        return null;
-    }
 }
