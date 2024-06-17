@@ -41,11 +41,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String mockLogin() {
+        User user = userRepository.findByOpenId("mock-open-id").orElse(null);
+        if (user != null) {
+            return JwtUtils.generateToken(user.getOpenId());
+        }
         WeixinSession mockSession = new WeixinSession();
-        mockSession.setOpenId("mock-open-ip");
-        mockSession.setOpenId("mock-union-ip");
+        mockSession.setOpenId("mock-open-id");
+        mockSession.setUnionId("mock-union-id");
         mockSession.setSessionKey("mock, I'm a mock session key");
-        User user = saveUser(null, mockSession);
+        user = saveUser(null, mockSession);
         return JwtUtils.generateToken(user.getOpenId());
     }
 

@@ -32,7 +32,8 @@ public class MahjongController {
     @GetMapping("/sport")
     public ApiResp<Void> saveSportInfo(@RequestBody SportInfoDto sportInfoDto) {
         log.info("saveSportInfo, sportInfo: {}", sportInfoDto);
-        return ApiResp.success(mahjongService.saveSportInfo(sportInfoDto));
+        mahjongService.saveSportInfo(sportInfoDto);
+        return ApiResp.success();
     }
 
     @GetMapping("/records")

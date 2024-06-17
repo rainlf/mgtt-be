@@ -21,4 +21,6 @@ public enum MahjongWinType {
         this.winnerNumber = winnerNumber;
         this.loserNumber = loserNumber;
     }
+
+
 }

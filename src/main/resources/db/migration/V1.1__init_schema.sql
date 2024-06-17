@@ -33,9 +33,9 @@ CREATE TABLE `weixin_mahjong_round`
 (
     `id`          int unsigned     not null auto_increment primary key,
     `recorder_id` int unsigned     not null,
-    `baseFan`     tinyint unsigned not null,
-    `winType`     varchar(128)     not null,
-    `fanTypes`    varchar(512)     not null,
+    `base_fan`    tinyint unsigned not null,
+    `win_type`    varchar(128)     not null,
+    `fan_types`   varchar(512)     not null,
     `create_time` datetime default current_timestamp,
     `update_time` datetime default current_timestamp on update current_timestamp
 ) ENGINE = InnoDB
@@ -45,9 +45,9 @@ CREATE TABLE `weixin_mahjong_round`
 CREATE TABLE `weixin_mahjong_round_detail`
 (
     `id`          int unsigned not null auto_increment primary key,
-    `recorder_id` int unsigned not null,
+    `round_id`    int unsigned not null,
     `type`        varchar(128) not null,
-    `userId`      int unsigned not null,
+    `user_id`     int unsigned not null,
     `score`       int          not null,
     `site`        varchar(128),
     `create_time` datetime default current_timestamp,

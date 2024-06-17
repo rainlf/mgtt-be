@@ -40,7 +40,7 @@ public class MahjongServiceImpl implements MahjongService {
     @Autowired
     private MahjongRoundDetailRepository mahjongRoundDetailRepository;
 
-    @Value("${recorder.award.random.max")
+    @Value("${recorder.award.random.max}")
     private int randomMax;
 
 
@@ -56,6 +56,7 @@ public class MahjongServiceImpl implements MahjongService {
         roundInfoDto.setRoundId(mahjongRound.getId());
 
         int fan = calculateTotalFan(roundInfoDto.getBaseFan(), roundInfoDto.getFanTypes().size());
+        log.info("total fan: {}", fan);
 
         List<User> users = new ArrayList<>();
         Map<Integer, Integer> socreMap = new HashMap<>();
@@ -137,9 +138,6 @@ public class MahjongServiceImpl implements MahjongService {
     }
 
     private int calculateTotalFan(int baseFan, int doubleFanCounts) {
-        int fan = baseFan + 1;
-        fan = fan << (doubleFanCounts + 1);
-        return fan;
+        return baseFan << doubleFanCounts;
     }
-
 }
