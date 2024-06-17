@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -77,6 +74,26 @@ public class MahjongServiceImpl implements MahjongService {
         log.info("socre info: {}", socreMap);
 
         saveRoundDetail(users, socreMap, roundInfoDto.getRoundId(), roundInfoDto.getSiteMap());
+        log.info("save round detail success");
+
+
+    }
+
+    private void saveRecorderDetail(Integer roundId, Integer recorderId) {
+        User user = userRepository.findById(recorderId).orElseThrow();
+        UserAsset userAsset = userAssetRepository.findByUserId(recorderId).orElseThrow();
+
+        int award = new Random().nextInt(randomMax) + 1;
+
+        userAsset.setCopperCoin(userAsset.getCopperCoin() + award);
+        userAssetRepository.save(userAsset);
+
+        MahjongRoundDetail detail = new MahjongRoundDetail();
+        detail.setRoundId(roundId);
+        detail.setType(MahjongDetailType.RECORD.toString());
+        detail.setUserId(recorderId);
+        detail.setScore(award);
+        mahjongRoundDetailRepository.save(detail);
     }
 
     private void saveRoundDetail(List<User> users, Map<Integer, Integer> socreMap, Integer roundId, Map<Integer, MahjongSiteType> siteMap) {
@@ -93,13 +110,13 @@ public class MahjongServiceImpl implements MahjongService {
             userAsset.setCopperCoin(userAsset.getCopperCoin() + socreMap.get(userId));
 
             // insert round details
-            MahjongRoundDetail winDetail = new MahjongRoundDetail();
-            winDetail.setRoundId(roundId);
-            winDetail.setType(MahjongDetailType.GAME.toString());
-            winDetail.setUserId(userId);
-            winDetail.setScore(socreMap.get(userId));
-            winDetail.setSite(siteMap.get(userId).toString());
-            mahjongRoundDetails.add(winDetail);
+            MahjongRoundDetail detail = new MahjongRoundDetail();
+            detail.setRoundId(roundId);
+            detail.setType(MahjongDetailType.GAME.toString());
+            detail.setUserId(userId);
+            detail.setScore(socreMap.get(userId));
+            detail.setSite(siteMap.get(userId).toString());
+            mahjongRoundDetails.add(detail);
         });
         userAssetRepository.saveAll(userAssets);
         mahjongRoundDetailRepository.saveAll(mahjongRoundDetails);
@@ -110,7 +127,6 @@ public class MahjongServiceImpl implements MahjongService {
         fan = fan << (doubleFanCounts + 1);
         return fan;
     }
-
 
     @Override
     public List<MahjongRecordDto> getRecords(Integer pageNumber, Integer pageSize) {

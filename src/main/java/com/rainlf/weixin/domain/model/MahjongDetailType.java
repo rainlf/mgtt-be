@@ -7,7 +7,7 @@ package com.rainlf.weixin.domain.model;
 public enum MahjongDetailType {
     GAME,
     SPORT,
-    AWARD,
+    RECORD,
     ;
 
     public static MahjongDetailType fromString(String value) {
