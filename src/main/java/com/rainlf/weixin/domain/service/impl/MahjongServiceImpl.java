@@ -1,9 +1,10 @@
 package com.rainlf.weixin.domain.service.impl;
 
-import com.rainlf.weixin.app.dto.MahjongRecordInfo;
-import com.rainlf.weixin.domain.model.MahjongRecordType;
+import com.rainlf.weixin.app.dto.MahjongRecord;
+import com.rainlf.weixin.app.dto.RoundInfo;
+import com.rainlf.weixin.domain.model.RecordType;
 import com.rainlf.weixin.domain.service.MahjongService;
-import com.rainlf.weixin.infra.db.model.MahjongRecord;
+import com.rainlf.weixin.infra.db.model.MahjongRound;
 import com.rainlf.weixin.infra.db.model.User;
 import com.rainlf.weixin.infra.db.model.UserAsset;
 import com.rainlf.weixin.infra.db.repository.MahjongRecordRepository;
@@ -40,28 +41,28 @@ public class MahjongServiceImpl implements MahjongService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveRecord(MahjongRecordInfo mahjongRecordInfo) {
-        boolean game = Objects.equals(mahjongRecordInfo.getType(), MahjongRecordType.GAME);
-        Set<Integer> userIds = mahjongRecordInfo.getRecords().stream().map(MahjongRecordInfo.Record::getUserId).collect(Collectors.toSet());
+    public void saveRecord(RoundInfo roundInfo) {
+        boolean game = Objects.equals(mahjongRecordLog.getType(), RecordType.GAME);
+        Set<Integer> userIds = mahjongRecordLog.getRecordItems().stream().map(MahjongRecord.RecordItem::getUserId).collect(Collectors.toSet());
         if (game) {
-            userIds.add(mahjongRecordInfo.getRecorderId());
+            userIds.add(mahjongRecordLog.getRecorderId());
         }
 
         List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userIds);
         Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getUserId, userAsset -> userAsset));
 
         // modify user asset
-        mahjongRecordInfo.getRecords().forEach(record -> {
-            UserAsset userAsset = userAssetMap.get(record.getUserId());
-            log.info("saveRecord: userId: {}, score: {}", userAsset.getUserId(), record.getScore());
-            userAsset.setCopperCoin(userAsset.getCopperCoin() + record.getScore());
+        mahjongRecordLog.getRecordItems().forEach(recordItem -> {
+            UserAsset userAsset = userAssetMap.get(recordItem.getUserId());
+            log.info("saveRecord: userId: {}, score: {}", userAsset.getUserId(), recordItem.getScore());
+            userAsset.setCopperCoin(userAsset.getCopperCoin() + recordItem.getScore());
         });
         // award recoder
         int recorderAward = 0;
         if (game) {
             recorderAward = new Random().nextInt(randomMax) + 1;
-            UserAsset recorderAsset = userAssetMap.get(mahjongRecordInfo.getRecorderId());
-            log.info("saveRecord: userId: {}, award: {}", mahjongRecordInfo.getRecorderId(), recorderAward);
+            UserAsset recorderAsset = userAssetMap.get(mahjongRecordLog.getRecorderId());
+            log.info("saveRecord: userId: {}, award: {}", mahjongRecordLog.getRecorderId(), recorderAward);
             recorderAsset.setCopperCoin(recorderAsset.getCopperCoin() + recorderAward);
         }
         // save db
@@ -70,91 +71,91 @@ public class MahjongServiceImpl implements MahjongService {
 
         // save record
         String roundId = UUID.randomUUID().toString().replaceAll("-", "");
-        List<MahjongRecord> mahjongRecordList = mahjongRecordInfo.getRecords()
+        List<MahjongRound> mahjongRoundList = mahjongRecordLog.getRecordItems()
                 .stream()
-                .map(record -> {
-                    MahjongRecord mahjongRecord = new MahjongRecord();
-                    mahjongRecord.setRoundId(roundId);
-                    mahjongRecord.setRecorderId(mahjongRecordInfo.getRecorderId());
-                    mahjongRecord.setType(mahjongRecordInfo.getType().toString());
-                    mahjongRecord.setUserId(record.getUserId());
-                    mahjongRecord.setScore(record.getScore());
-                    return mahjongRecord;
+                .map(recordItem -> {
+                    MahjongRound mahjongRound = new MahjongRound();
+                    mahjongRound.setRoundId(roundId);
+                    mahjongRound.setRecorderId(mahjongRecordLog.getRecorderId());
+                    mahjongRound.setType(mahjongRecordLog.getType().toString());
+                    mahjongRound.setUserId(recordItem.getUserId());
+                    mahjongRound.setScore(recordItem.getScore());
+                    return mahjongRound;
                 }).collect(Collectors.toList());
 
         // add record award record
         if (game) {
-            MahjongRecord mahjongRecord = new MahjongRecord();
-            mahjongRecord.setRoundId(roundId);
-            mahjongRecord.setRecorderId(mahjongRecordInfo.getRecorderId());
-            mahjongRecord.setType(MahjongRecordType.AWARD.toString());
-            mahjongRecord.setUserId(mahjongRecordInfo.getRecorderId());
-            mahjongRecord.setScore(recorderAward);
-            mahjongRecordList.add(mahjongRecord);
+            MahjongRound mahjongRound = new MahjongRound();
+            mahjongRound.setRoundId(roundId);
+            mahjongRound.setRecorderId(mahjongRecordLog.getRecorderId());
+            mahjongRound.setType(RecordType.AWARD.toString());
+            mahjongRound.setUserId(mahjongRecordLog.getRecorderId());
+            mahjongRound.setScore(recorderAward);
+            mahjongRoundList.add(mahjongRound);
         }
 
-        mahjongRecordRepository.saveAll(mahjongRecordList);
+        mahjongRecordRepository.saveAll(mahjongRoundList);
         log.info("saveRecord: save mahjong record");
     }
 
     @Override
-    public List<MahjongRecordInfo> getRecords(Integer pageNumber, Integer pageSize) {
-        List<MahjongRecordInfo> result = new ArrayList<>();
+    public List<MahjongRecord> getRecords(Integer pageNumber, Integer pageSize) {
+        List<MahjongRecord> result = new ArrayList<>();
 
         // find record pageable
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<MahjongRecord> allRecordPage = mahjongRecordRepository.findAll(pageable);
-        List<MahjongRecord> allRecordList = allRecordPage.getContent();
+        Page<MahjongRound> allRecordPage = mahjongRecordRepository.findAll(pageable);
+        List<MahjongRound> allRecordList = allRecordPage.getContent();
 
         // find user info
-        Set<Integer> userIdList = allRecordList.stream().map(MahjongRecord::getUserId).collect(Collectors.toSet());
-        userIdList.addAll(allRecordList.stream().map(MahjongRecord::getRecorderId).collect(Collectors.toSet()));
+        Set<Integer> userIdList = allRecordList.stream().map(MahjongRound::getUserId).collect(Collectors.toSet());
+        userIdList.addAll(allRecordList.stream().map(MahjongRound::getRecorderId).collect(Collectors.toSet()));
         List<User> userList = userRepository.findAllById(userIdList);
 
         // handle record by group
-        Map<String, List<MahjongRecord>> allRecordGroupMap = allRecordList.stream().collect(Collectors.groupingBy(MahjongRecord::getRoundId));
-        for (List<MahjongRecord> roundList : allRecordGroupMap.values()) {
+        Map<String, List<MahjongRound>> allRecordGroupMap = allRecordList.stream().collect(Collectors.groupingBy(MahjongRound::getRoundId));
+        for (List<MahjongRound> roundList : allRecordGroupMap.values()) {
 
             // create record award info
-            List<MahjongRecord> awardRecord = roundList.stream().filter(x -> Objects.equals(MahjongRecordType.fromString(x.getType()), MahjongRecordType.AWARD)).toList();
+            List<MahjongRound> awardRecord = roundList.stream().filter(x -> Objects.equals(RecordType.fromString(x.getType()), RecordType.AWARD)).toList();
             if (!awardRecord.isEmpty()) {
                 result.add(createMahjongRecordInfo(awardRecord, userList));
             }
 
             // create game or sport info
-            List<MahjongRecord> noAwardList = roundList.stream().filter(x -> !Objects.equals(MahjongRecordType.fromString(x.getType()), MahjongRecordType.AWARD)).toList();
+            List<MahjongRound> noAwardList = roundList.stream().filter(x -> !Objects.equals(RecordType.fromString(x.getType()), RecordType.AWARD)).toList();
             result.add(createMahjongRecordInfo(noAwardList, userList));
         }
         return result;
     }
 
-    private MahjongRecordInfo createMahjongRecordInfo(List<MahjongRecord> mahjongRecords, List<User> users) {
+    private MahjongRecord createMahjongRecordInfo(List<MahjongRound> mahjongRounds, List<User> users) {
         Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, user -> user));
 
         // the same info
-        MahjongRecord mahjongRecord = mahjongRecords.get(0);
-        User recordUser = userMap.get(mahjongRecord.getRecorderId());
+        MahjongRound mahjongRound = mahjongRounds.get(0);
+        User recordUser = userMap.get(mahjongRound.getRecorderId());
 
-        MahjongRecordInfo mahjongRecordInfo = new MahjongRecordInfo();
-        mahjongRecordInfo.setType(MahjongRecordType.fromString(mahjongRecord.getType()));
-        mahjongRecordInfo.setRecorderId(recordUser.getId());
-        mahjongRecordInfo.setRecorderName(recordUser.getNickname());
-        mahjongRecordInfo.setRecorderAvatar(recordUser.getAvatar());
-        mahjongRecordInfo.setCreateTime(mahjongRecord.getCreateTime());
+        MahjongRecord mahjongRecordLog = new MahjongRecord();
+        mahjongRecordLog.setType(RecordType.fromString(mahjongRound.getType()));
+        mahjongRecordLog.setRecorderId(recordUser.getId());
+        mahjongRecordLog.setRecorderName(recordUser.getNickname());
+        mahjongRecordLog.setRecorderAvatar(recordUser.getAvatar());
+        mahjongRecordLog.setCreateTime(mahjongRound.getCreateTime());
 
         // record detail of echo user
-        List<MahjongRecordInfo.Record> records = mahjongRecords.stream()
+        List<MahjongRecord.RecordItem> recordItems = mahjongRounds.stream()
                 .map(x -> {
                             User user = userMap.get(x.getUserId());
-                            MahjongRecordInfo.Record record = new MahjongRecordInfo.Record();
-                            record.setUserId(user.getId());
-                            record.setUserName(user.getNickname());
-                            record.setUserAvatar(user.getAvatar());
-                            record.setScore(x.getScore());
-                            return record;
+                            MahjongRecord.RecordItem recordItem = new MahjongRecord.RecordItem();
+                            recordItem.setUserId(user.getId());
+                            recordItem.setUserName(user.getNickname());
+                            recordItem.setUserAvatar(user.getAvatar());
+                            recordItem.setScore(x.getScore());
+                            return recordItem;
                         }
                 ).toList();
-        mahjongRecordInfo.setRecords(records);
-        return mahjongRecordInfo;
+        mahjongRecordLog.setRecordItems(recordItems);
+        return mahjongRecordLog;
     }
 }

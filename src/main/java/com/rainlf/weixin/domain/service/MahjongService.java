@@ -1,6 +1,7 @@
 package com.rainlf.weixin.domain.service;
 
-import com.rainlf.weixin.app.dto.MahjongRecordInfo;
+import com.rainlf.weixin.app.dto.MahjongRecord;
+import com.rainlf.weixin.app.dto.RoundInfo;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @date 6/14/2024 8:32 PM
  */
 public interface MahjongService {
-    void saveRecord(MahjongRecordInfo mahjongRecordInfo);
+    void saveRecord(RoundInfo roundInfo);
 
-    List<MahjongRecordInfo> getRecords(Integer pageNumber, Integer pageSize);
+    List<MahjongRecord> getRecords(Integer pageNumber, Integer pageSize);
 }

@@ -11,16 +11,17 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "weixin_mahjong_record")
-public class MahjongRecord {
+@Table(name = "weixin_mahjong_round_detail")
+public class MahjongRoundDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String roundId;
-    private Integer recorderId;
+    private Integer roundId;
     private String type;
     private Integer userId;
     private Integer score;
+    private String site;
+
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)
