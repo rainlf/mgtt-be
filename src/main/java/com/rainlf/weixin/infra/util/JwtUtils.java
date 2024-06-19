@@ -22,9 +22,9 @@ import java.util.UUID;
 public class JwtUtils {
 
     /**
-     * 过期时间(单位:秒)
+     * 过期时间(单位:天)
      */
-    public static final int ACCESS_EXPIRE = 1;
+    public static final int ACCESS_EXPIRE = 180;
     /**
      * 加密算法
      */
