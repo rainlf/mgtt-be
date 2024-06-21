@@ -4,8 +4,6 @@ import com.rainlf.weixin.app.dto.MahjongRecordDto;
 import com.rainlf.weixin.app.dto.MahjongInfoDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.domain.consts.GameDetailTypeEnum;
-import com.rainlf.weixin.domain.consts.GameDetailType;
-import com.rainlf.weixin.domain.consts.MahjongSiteType;
 import com.rainlf.weixin.domain.service.GameService;
 import com.rainlf.weixin.infra.db.model.Game;
 import com.rainlf.weixin.infra.db.model.GameDetail;
