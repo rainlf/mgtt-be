@@ -1,7 +1,9 @@
 package com.rainlf.weixin.infra.db.model;
 
+import com.rainlf.weixin.domain.consts.GameTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -11,16 +13,16 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "weixin_mahjong_round_detail")
-public class MahjongRoundDetail {
+@Table(name = "weixin_game")
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer roundId;
-    private String type;
-    private Integer userId;
+    private GameTypeEnum gameType;
+    private Integer recorderId;
     private Integer score;
-    private String site;
+    private String scoreExt;
+    private String winerCase;
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)

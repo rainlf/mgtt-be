@@ -1,8 +1,8 @@
 package com.rainlf.weixin.infra.db.model;
 
+import com.rainlf.weixin.domain.consts.GameDetailTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -12,16 +12,16 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "weixin_mahjong_round")
-@Where(clause = "deleted = 0")
-public class MahjongRound {
+@Table(name = "weixin_game_detail")
+public class GameDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer recorderId;
-    private Integer baseFan;
-    private String winType;
-    private String fanTypes;
+    private Integer gameId;
+    private Integer userId;
+    private GameDetailTypeEnum type;
+    private Integer score;
+    private String site;
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)

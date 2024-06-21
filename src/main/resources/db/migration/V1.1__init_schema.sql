@@ -29,27 +29,27 @@ CREATE TABLE `weixin_user_asset`
   DEFAULT CHARSET = UTF8;
 
 
-CREATE TABLE `weixin_mahjong_round`
+CREATE TABLE `weixin_game`
 (
-    `id`          int unsigned     not null auto_increment primary key,
-    `recorder_id` int unsigned     not null,
-    `base_fan`    tinyint unsigned not null,
-    `win_type`    varchar(128)     not null,
-    `fan_types`   varchar(512)     not null,
+    `id`          int unsigned not null auto_increment primary key,
+    `game_type`   varchar(128) not null,
+    `recorder_id` int unsigned not null,
+    `score`       int unsigned not null,
+    `score_ext`   varchar(128) not null,
+    `winer_case`  varchar(512) not null,
     `create_time` datetime default current_timestamp,
     `update_time` datetime default current_timestamp on update current_timestamp
 ) ENGINE = InnoDB
   DEFAULT CHARSET = UTF8;
 
 
-CREATE TABLE `weixin_mahjong_round_detail`
+CREATE TABLE `weixin_game_detail`
 (
     `id`          int unsigned not null auto_increment primary key,
-    `round_id`    int unsigned,
-    `type`        varchar(128) not null,
+    `game_id`     int unsigned,
     `user_id`     int unsigned not null,
+    `detail_type` varchar(128) not null,
     `score`       int          not null,
-    `site`        varchar(128),
     `create_time` datetime default current_timestamp,
     `update_time` datetime default current_timestamp on update current_timestamp
 ) ENGINE = InnoDB
