@@ -18,6 +18,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @GetMapping("/test")
+    public ApiResp<String> test() {
+        log.info("test, ok");
+        return ApiResp.success("ok");
+    }
+
     @PostMapping("/login")
     public ApiResp<String> login(@RequestParam("code") String code) {
         log.info("login code:{}", code);
