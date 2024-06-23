@@ -1,5 +1,6 @@
 package com.rainlf.weixin.infra.wexin.service.impl;
 
+import com.rainlf.weixin.infra.runner.WeixinConfigStore;
 import com.rainlf.weixin.infra.util.JsonUtils;
 import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
@@ -18,12 +19,14 @@ import org.springframework.web.client.RestTemplate;
 public class WeixinServiceImpl implements WeixinService {
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private WeixinConfigStore weixinConfigStore;
 
-    @Value("${weixin.appid}")
-    private String appId;
+    @Value("${weixin.appid.key}")
+    private String weixinAppIdKey;
 
-    @Value("${weixin.secret}")
-    private String secret;
+    @Value("${weixin.secret.key}")
+    private String weixinSecretKey;
 
     @Value("${weixin.api.code2Session}")
     private String code2SessionUrl;
@@ -33,8 +36,8 @@ public class WeixinServiceImpl implements WeixinService {
         log.info("code2Session, code: {}", code);
         StringBuilder sb = new StringBuilder();
         sb.append(code2SessionUrl)
-                .append("?").append("appid").append("=").append(appId)
-                .append("&").append("secret").append("=").append(secret)
+                .append("?").append("appid").append("=").append(weixinConfigStore.getValue(weixinAppIdKey))
+                .append("&").append("secret").append("=").append(weixinConfigStore.getValue(weixinAppIdKey))
                 .append("&").append("js_code").append("=").append(code)
                 .append("&").append("grant_type").append("=").append("authorization_code");
 
