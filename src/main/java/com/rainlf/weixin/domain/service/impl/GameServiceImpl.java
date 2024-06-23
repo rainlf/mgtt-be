@@ -1,22 +1,18 @@
 package com.rainlf.weixin.domain.service.impl;
 
 import com.rainlf.weixin.app.dto.MahjongRecordDto;
-import com.rainlf.weixin.app.dto.MahjongInfoDto;
+import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.domain.consts.GameDetailTypeEnum;
+import com.rainlf.weixin.domain.consts.GameTypeEnum;
 import com.rainlf.weixin.domain.service.GameService;
-import com.rainlf.weixin.infra.db.model.Game;
-import com.rainlf.weixin.infra.db.model.GameDetail;
-import com.rainlf.weixin.infra.db.model.User;
-import com.rainlf.weixin.infra.db.model.UserAsset;
-import com.rainlf.weixin.infra.db.repository.GameDetailRepository;
-import com.rainlf.weixin.infra.db.repository.GameRepository;
-import com.rainlf.weixin.infra.db.repository.UserAssetRepository;
-import com.rainlf.weixin.infra.db.repository.UserRepository;
+import com.rainlf.weixin.infra.db.model.*;
+import com.rainlf.weixin.infra.db.repository.*;
 import com.rainlf.weixin.infra.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,47 +34,75 @@ public class GameServiceImpl implements GameService {
     private GameRepository gameRepository;
     @Autowired
     private GameDetailRepository gameDetailRepository;
+    @Autowired
+    private MahjongPlayerRepository mahjongPlayerRepository;
 
     @Value("${recorder.award.random.max}")
     private int randomAwardMax;
 
+
+    @Override
+    public void addMahjongPlayer(Integer id) {
+        List<MahjongPlayer> mahjongPlayers = mahjongPlayerRepository.findByUserId(id);
+        mahjongPlayers.forEach(x -> x.setDeleted(true));
+
+        MahjongPlayer mahjongPlayer = new MahjongPlayer();
+        mahjongPlayer.setUserId(id);
+        mahjongPlayers.add(mahjongPlayer);
+
+        mahjongPlayerRepository.saveAll(mahjongPlayers);
+    }
+
+    @Override
+    public void deleteMahjongPlayer(Integer id) {
+        List<MahjongPlayer> mahjongPlayers = mahjongPlayerRepository.findByUserId(id);
+        mahjongPlayers.forEach(x -> x.setDeleted(true));
+        mahjongPlayerRepository.saveAll(mahjongPlayers);
+    }
+
+    @Override
+    public List<Integer> getMahjongPlayerIds() {
+        List<MahjongPlayer> mahjongPlayers = mahjongPlayerRepository.findAll(Sort.by(Sort.Direction.ASC, "createTime"));
+        return mahjongPlayers.stream().map(MahjongPlayer::getUserId).collect(Collectors.toList());
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveMahjongInfo(MahjongInfoDto mahjongInfoDto) {
+    public void saveMahjongInfo(MahjongRoundInfoDto mahjongRoundInfoDto) {
         Game game = new Game();
-        game.setRecorderId(mahjongInfoDto.getRecorderId());
-        game.setScore(mahjongInfoDto.getBaseScore());
-        game.setScoreExt(JsonUtils.toJson(mahjongInfoDto.getScoreExtList()));
-        game.setWinerCase(mahjongInfoDto.getWinerCase().toString());
+        game.setGameType(GameTypeEnum.MAHJONG);
+        game.setRecorderId(mahjongRoundInfoDto.getRecorderId());
+        game.setScore(mahjongRoundInfoDto.getBaseFan());
+        game.setWinCase(mahjongRoundInfoDto.getWinCase().toString());
+        game.setScoreExt(JsonUtils.toJson(mahjongRoundInfoDto.getFanList()));
         game = gameRepository.save(game);
-        mahjongInfoDto.setGameId(game.getId());
 
-        int fan = calculateTotalScore(mahjongInfoDto.getBaseScore(), mahjongInfoDto.getScoreExtList().size());
+        int fan = calculateMahjongTotalFan(mahjongRoundInfoDto.getBaseFan(), mahjongRoundInfoDto.getFanList().size());
         log.info("total fan: {}", fan);
 
         List<User> users = new ArrayList<>();
         Map<Integer, Integer> socreMap = new HashMap<>();
-        List<User> winners = userRepository.findAllById(mahjongInfoDto.getWinnerIds());
-        List<User> losers = userRepository.findAllById(mahjongInfoDto.getLoserIds());
+        List<User> winners = userRepository.findAllById(mahjongRoundInfoDto.getWinnerIds());
+        List<User> losers = userRepository.findAllById(mahjongRoundInfoDto.getLoserIds());
 
-        int winerNumber = mahjongInfoDto.getWinerCase().getWinnerNumber();
-        int loserNumber = mahjongInfoDto.getWinerCase().getLoserNumber();
-        if (winners.size() != winerNumber || losers.size() != loserNumber) {
+        int winnerNumber = mahjongRoundInfoDto.getWinCase().getWinnerNumber();
+        int loserNumber = mahjongRoundInfoDto.getWinCase().getLoserNumber();
+        if (winners.size() != winnerNumber || losers.size() != loserNumber) {
             throw new RuntimeException("not expect scenario");
         }
 
         users.addAll(winners);
         users.addAll(losers);
         winners.forEach(winner -> socreMap.put(winner.getId(), fan * loserNumber));
-        losers.forEach(loser -> socreMap.put(loser.getId(), -fan * winerNumber));
+        losers.forEach(loser -> socreMap.put(loser.getId(), -fan * winnerNumber));
         log.info("socre info: {}", socreMap);
 
-        saveGameDetail(users, socreMap, mahjongInfoDto.getGameId());
+        savePlayerDetail(game.getId(), users, socreMap);
         log.info("save game detail success");
 
         int award = new Random().nextInt(randomAwardMax) + 1;
-        log.info("recorder info, userId: {}, score: {}", mahjongInfoDto.getRecorderId(), award);
-        saveRecorderDetail(game.getId(), mahjongInfoDto.getRecorderId(), award, GameDetailTypeEnum.MAHJONG_AWARD);
+        log.info("recorder info, userId: {}, score: {}", mahjongRoundInfoDto.getRecorderId(), award);
+        saveRecorderDetail(game.getId(), mahjongRoundInfoDto.getRecorderId(), award);
         log.info("save recorder detail success");
     }
 
@@ -86,7 +110,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void saveSportInfo(SportInfoDto sportInfoDto) {
         log.info("sport info, userId: {}, score: {}", sportInfoDto.getSporterId(), sportInfoDto.getSportNumber());
-        saveRecorderDetail(null, sportInfoDto.getSporterId(), sportInfoDto.getSportNumber(), GameDetailTypeEnum.REPAYMENT_SPORT);
+        saveSporterDetail(sportInfoDto.getSporterId(), sportInfoDto.getSportNumber());
         log.info("save sporter detail success");
     }
 
@@ -95,21 +119,42 @@ public class GameServiceImpl implements GameService {
         return null;
     }
 
-    private void saveRecorderDetail(Integer gameId, Integer userId, Integer score, GameDetailTypeEnum type) {
-        User user = userRepository.findById(userId).orElseThrow();
-        UserAsset userAsset = userAssetRepository.findByUserId(userId).orElseThrow();
-
-        userAsset.setCopperCoin(userAsset.getCopperCoin() + score);
-        userAssetRepository.save(userAsset);
-
-        GameDetail detail = new GameDetail();
-        detail.setType(type);
-        detail.setUserId(userId);
-        detail.setScore(score);
-        gameDetailRepository.save(detail);
+    /**
+     * change recorder asset and save game detail
+     */
+    private void savePlayerDetail(Integer gameId, List<User> users, Map<Integer/* userId */, Integer/* userScore */> socreMap) {
+        saveMultiGameDetail(gameId, GameDetailTypeEnum.MAHJONG_GAME, users, socreMap);
     }
 
-    private void saveGameDetail(List<User> users, Map<Integer, Integer> socreMap, Integer gameId) {
+    /**
+     * change recorder asset and save game detail
+     */
+    private void saveRecorderDetail(Integer gameId, Integer userId, Integer score) {
+        saveSingleGameDetail(gameId, GameDetailTypeEnum.MAHJONG_AWARD, userId, score);
+    }
+
+    /**
+     * change sporter asset and save game detail
+     */
+    private void saveSporterDetail(Integer userId, Integer score) {
+        saveSingleGameDetail(null, GameDetailTypeEnum.REPAYMENT_SPORT, userId, score);
+    }
+
+    /**
+     * change single user asset and save game detail
+     */
+    private void saveSingleGameDetail(Integer gameId, GameDetailTypeEnum type, Integer userId, Integer score) {
+        User user = userRepository.findById(userId).orElseThrow();
+        List<User> users = Collections.singletonList(user);
+        Map<Integer, Integer> socreMap = new HashMap<>();
+        socreMap.put(user.getId(), score);
+        saveMultiGameDetail(gameId, type, users, socreMap);
+    }
+
+    /**
+     * change multi user asset and save game detail
+     */
+    private void saveMultiGameDetail(Integer gameId, GameDetailTypeEnum type, List<User> users, Map<Integer/* userId */, Integer/* userScore */> socreMap) {
         // find asset
         List<UserAsset> userAssets = userAssetRepository.findByUserIdIn(users.stream().map(User::getId).toList());
         Map<Integer, UserAsset> userAssetMap = userAssets.stream().collect(Collectors.toMap(UserAsset::getUserId, x -> x));
@@ -125,16 +170,21 @@ public class GameServiceImpl implements GameService {
             // insert game details
             GameDetail detail = new GameDetail();
             detail.setGameId(gameId);
-            detail.setType(GameDetailTypeEnum.MAHJONG_GAME);
             detail.setUserId(userId);
+            detail.setType(type);
             detail.setScore(socreMap.get(userId));
             gameDetails.add(detail);
         });
+
+        // save db
         userAssetRepository.saveAll(userAssets);
         gameDetailRepository.saveAll(gameDetails);
     }
 
-    private int calculateTotalScore(int score, int doubleScoreCounts) {
-        return score << doubleScoreCounts;
+    /**
+     * calculate mahjong total fan
+     */
+    private int calculateMahjongTotalFan(int fan, int fanListSize) {
+        return fan << fanListSize;
     }
 }

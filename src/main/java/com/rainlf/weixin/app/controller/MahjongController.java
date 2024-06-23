@@ -1,8 +1,8 @@
 package com.rainlf.weixin.app.controller;
 
 import com.rainlf.weixin.app.dto.ApiResp;
+import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.MahjongRecordDto;
-import com.rainlf.weixin.app.dto.MahjongInfoDto;
 import com.rainlf.weixin.domain.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,33 @@ public class MahjongController {
     @Autowired
     private GameService gameService;
 
-    @PostMapping("/record")
-    public ApiResp<Void> saveMahjongInfo(@RequestBody MahjongInfoDto mahjongInfoDto) {
-        log.info("saveMahjongInfo, req: {}", mahjongInfoDto);
-        gameService.saveMahjongInfo(mahjongInfoDto);
+    @GetMapping("/palyer/ids")
+    public ApiResp<List<Integer>> getPlayerIds() {
+        log.info("getPlayerIds");
+        List<Integer> playerIds = gameService.getMahjongPlayerIds();
+        log.info("getPlayerIds, playerIds: {}", playerIds);
+        return ApiResp.success(playerIds);
+    }
+
+    @PostMapping("/palyer")
+    public ApiResp<Void> addPalyer(@RequestParam("id") Integer id) {
+        log.info("addPalyer, id: {}", id);
+        gameService.addMahjongPlayer(id);
+        return ApiResp.success();
+    }
+
+    @DeleteMapping("/palyer")
+    public ApiResp<Void> deletePlayer(@RequestParam("id") Integer id) {
+        log.info("deletePlayer, id: {}", id);
+        gameService.deleteMahjongPlayer(id);
+        return ApiResp.success();
+    }
+
+
+    @PostMapping("/round")
+    public ApiResp<Void> saveMahjongInfo(@RequestBody MahjongRoundInfoDto mahjongRoundInfoDto) {
+        log.info("saveMahjongInfo, req: {}", mahjongRoundInfoDto);
+        gameService.saveMahjongInfo(mahjongRoundInfoDto);
         return ApiResp.success();
     }
 
@@ -33,4 +56,5 @@ public class MahjongController {
         log.info("getMahjongRecords, pageNumber: {}, pageSize: {}", pageNumber, pageSize);
         return ApiResp.success(gameService.getMahjongRecords(pageNumber, pageSize));
     }
+
 }

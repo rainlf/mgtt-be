@@ -11,10 +11,9 @@ import java.util.List;
  */
 public interface UserService {
 
-    UserInfoDto getUserInfo(User user);
+    UserInfoDto getUser(User user);
 
-    List<UserInfoDto> getAllUserInfo();
+    UserInfoDto updateUser(User user, String nickname, String avatar);
 
-
-    UserInfoDto updateCurrentUser(User user, String nickname, String avatar);
+    List<UserInfoDto> getAllInitedUser();
 }

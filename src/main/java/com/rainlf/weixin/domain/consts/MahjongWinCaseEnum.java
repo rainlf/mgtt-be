@@ -7,7 +7,7 @@ import lombok.Getter;
  * @date 6/17/2024 2:35 PM
  */
 @Getter
-public enum MahjongWinerCaseEnum {
+public enum MahjongWinCaseEnum {
     MJ_COMMON_WIN(1, 1),
     MJ_SELF_TOUCH_WIN(1, 3),
     MJ_ONE_PAO_DOUBLE_WIN(2, 1),
@@ -17,7 +17,7 @@ public enum MahjongWinerCaseEnum {
     private final int winnerNumber;
     private final int loserNumber;
 
-    MahjongWinerCaseEnum(int winnerNumber, int loserNumber) {
+    MahjongWinCaseEnum(int winnerNumber, int loserNumber) {
         this.winnerNumber = winnerNumber;
         this.loserNumber = loserNumber;
     }

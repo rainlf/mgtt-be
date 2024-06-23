@@ -9,6 +9,7 @@ import com.rainlf.weixin.infra.db.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     private UserAssetRepository userAssetRepository;
 
     @Override
-    public UserInfoDto getUserInfo(User user) {
+    public UserInfoDto getUser(User user) {
         Optional<UserAsset> userAssetOptional = userAssetRepository.findByUserId(user.getId());
         if (userAssetOptional.isEmpty()) {
             throw new RuntimeException("user asset not found, id: " + user.getId());
@@ -39,8 +40,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserInfoDto> getAllUserInfo() {
+    public List<UserInfoDto> getAllInitedUser() {
         List<User> userList = userRepository.findAll();
+        userList = userList.stream().filter(this::isUserInited).toList();
         List<UserAsset> userAssetList = userAssetRepository.findByUserIdIn(userList.stream().map(User::getId).toList());
         Map<Integer, UserAsset> userAssetMap = userAssetList.stream().collect(Collectors.toMap(UserAsset::getId, x -> x));
 
@@ -53,8 +55,12 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    private boolean isUserInited(User user) {
+        return StringUtils.hasText(user.getNickname()) && StringUtils.hasText(user.getAvatar());
+    }
+
     @Override
-    public UserInfoDto updateCurrentUser(User user, String nickname, String avatar) {
+    public UserInfoDto updateUser(User user, String nickname, String avatar) {
         user.setNickname(nickname);
         user.setAvatar(avatar);
         userRepository.save(user);

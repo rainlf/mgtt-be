@@ -3,7 +3,6 @@ package com.rainlf.weixin.infra.db.model;
 import com.rainlf.weixin.domain.consts.GameTypeEnum;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +21,7 @@ public class Game {
     private Integer recorderId;
     private Integer score;
     private String scoreExt;
-    private String winerCase;
+    private String winCase;
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
     @Column(insertable = false, updatable = false)

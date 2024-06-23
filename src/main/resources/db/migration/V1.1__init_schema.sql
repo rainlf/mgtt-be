@@ -1,4 +1,4 @@
-CREATE TABLE `weixin_user`
+CREATE TABLE IF NOT EXISTS `weixin_user`
 (
 
     `id`          int unsigned     not null auto_increment primary key,
@@ -15,7 +15,7 @@ CREATE TABLE `weixin_user`
   DEFAULT CHARSET = UTF8;
 
 
-CREATE TABLE `weixin_user_asset`
+CREATE TABLE IF NOT EXISTS `weixin_user_asset`
 (
 
     `id`          int unsigned not null auto_increment primary key,
@@ -29,26 +29,26 @@ CREATE TABLE `weixin_user_asset`
   DEFAULT CHARSET = UTF8;
 
 
-CREATE TABLE `weixin_game`
+CREATE TABLE IF NOT EXISTS `weixin_game`
 (
     `id`          int unsigned not null auto_increment primary key,
     `game_type`   varchar(128) not null,
     `recorder_id` int unsigned not null,
     `score`       int unsigned not null,
     `score_ext`   varchar(128) not null,
-    `winer_case`  varchar(512) not null,
+    `win_case`  varchar(512) not null,
     `create_time` datetime default current_timestamp,
     `update_time` datetime default current_timestamp on update current_timestamp
 ) ENGINE = InnoDB
   DEFAULT CHARSET = UTF8;
 
 
-CREATE TABLE `weixin_game_detail`
+CREATE TABLE IF NOT EXISTS `weixin_game_detail`
 (
     `id`          int unsigned not null auto_increment primary key,
     `game_id`     int unsigned,
     `user_id`     int unsigned not null,
-    `detail_type` varchar(128) not null,
+    `type` varchar(128) not null,
     `score`       int          not null,
     `create_time` datetime default current_timestamp,
     `update_time` datetime default current_timestamp on update current_timestamp
