@@ -1,7 +1,7 @@
 package com.rainlf.weixin.domain.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.rainlf.weixin.app.dto.MahjongRecordDto;
+import com.rainlf.weixin.app.dto.MahjongLogDto;
 import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.app.dto.UserMahjongTagDto;
@@ -44,6 +44,10 @@ public class GameServiceImpl implements GameService {
 
     @Value("${recorder.award.random.max}")
     private int randomAwardMax;
+
+    private int userTagListMaxLen = 5;
+
+    private int gameDetailPageSize = 100;
 
 
     @Override
@@ -120,8 +124,75 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<MahjongRecordDto> getMahjongRecords(Integer pageNumber, Integer pageSize) {
-        return null;
+    public List<MahjongLogDto> getMahjongLogs() {
+        // find game
+        List<Game> games = gameRepository.findAll();
+        List<Integer> gameIds = games.stream().map(Game::getId).toList();
+
+        // find game detail
+        List<GameDetail> gameDetails = gameDetailRepository.findByGameIdIn(gameIds);
+        List<Integer> userId = gameDetails.stream().map(GameDetail::getUserId).toList();
+        Map<Integer/* gameId */, List<GameDetail>> gameDetailsMap = gameDetails.stream().collect(Collectors.groupingBy(GameDetail::getGameId));
+
+        // find user
+        List<User> users = userRepository.findAllById(userId);
+        Map<Integer/* userId */, User> userMap = users.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+
+        // create mahjong log list
+        List<MahjongLogDto> result = new ArrayList<>();
+        for (Game game : games) {
+            Integer gameId = game.getId();
+            List<MahjongScoreExtEnum> mahjongScoreExtEnums = JsonUtils.toObjectList(game.getScoreExt(), new TypeReference<>() {
+            });
+
+            // create mahjong log
+            MahjongLogDto mahjongLogDto = new MahjongLogDto();
+            mahjongLogDto.setGameId(gameId);
+            mahjongLogDto.setGameTags(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
+
+            // find all details in game
+            List<GameDetail> gameDetailList = gameDetailsMap.get(gameId);
+
+            // find recorder
+            GameDetail recorderDetail = gameDetailList.stream().filter(x -> x.getType() == GameDetailTypeEnum.MAHJONG_AWARD.ordinal()).findFirst().orElseThrow();
+            User recorder = userMap.get(recorderDetail.getUserId());
+            mahjongLogDto.setRecorderId(recorder.getId());
+            mahjongLogDto.setRecorderName(recorder.getNickname());
+            mahjongLogDto.setRecorderAvatar(recorder.getAvatar());
+            mahjongLogDto.setRecorderAward(recorderDetail.getScore());
+
+            // find winner
+            List<GameDetail> winnerDetailList = gameDetailList.stream().filter(x -> x.getType() == GameDetailTypeEnum.MAHJONG_GAME.ordinal()).filter(x -> x.getScore() > 0).toList();
+            List<MahjongLogDto.Item> winners = new ArrayList<>();
+            for (GameDetail winnerDetail : winnerDetailList) {
+                User winner = userMap.get(winnerDetail.getUserId());
+                MahjongLogDto.Item winnerItem = new MahjongLogDto.Item();
+                winnerItem.setUserId(winner.getId());
+                winnerItem.setUserName(winner.getNickname());
+                winnerItem.setUserAvatar(winner.getAvatar());
+                winnerItem.setScore(winnerDetail.getScore());
+                winners.add(winnerItem);
+            }
+            mahjongLogDto.setWinners(winners);
+
+            // find loser
+            List<GameDetail> loserDetailList = gameDetailList.stream().filter(x -> x.getType() == GameDetailTypeEnum.MAHJONG_GAME.ordinal()).filter(x -> x.getScore() < 0).toList();
+            List<MahjongLogDto.Item> losers = new ArrayList<>();
+            for (GameDetail loserDetail : loserDetailList) {
+                User loser = userMap.get(loserDetail.getUserId());
+                MahjongLogDto.Item loserItem = new MahjongLogDto.Item();
+                loserItem.setUserId(loser.getId());
+                loserItem.setUserName(loser.getNickname());
+                loserItem.setUserAvatar(loser.getAvatar());
+                loserItem.setScore(loserDetail.getScore());
+                losers.add(loserItem);
+            }
+            mahjongLogDto.setLosers(losers);
+            result.add(mahjongLogDto);
+        }
+
+        result.sort((a, b) -> b.getGameId() - a.getGameId());
+        return result;
     }
 
     @Override
@@ -129,16 +200,14 @@ public class GameServiceImpl implements GameService {
         List<UserMahjongTagDto> result = new ArrayList<>();
         for (Integer userId : userIds) {
             // find game detail, get game id
-            Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "id"));
+            Pageable pageable = PageRequest.of(0, gameDetailPageSize, Sort.by(Sort.Direction.DESC, "id"));
 //            List<GameDetail> gameDetails = gameDetailRepository.findByUserIdAndType(userId, 0, pageable);
             List<GameDetail> gameDetails = gameDetailRepository.findByUserIdAndType(userId, GameDetailTypeEnum.MAHJONG_GAME.ordinal());
             List<Integer> gameIds = gameDetails.stream().map(GameDetail::getGameId).toList();
 
             // find game
             if (!gameIds.isEmpty()) {
-                log.info("rain, gameId: {}", gameIds);
                 List<Game> games = gameRepository.findByIdIn(gameIds);
-                log.info("rain, {}", games);
 
                 UserMahjongTagDto userMahjongTagDto = new UserMahjongTagDto();
                 userMahjongTagDto.setUserId(userId);
@@ -147,8 +216,8 @@ public class GameServiceImpl implements GameService {
                     List<MahjongScoreExtEnum> mahjongScoreExtEnums = JsonUtils.toObjectList(game.getScoreExt(), new TypeReference<>() {
                     });
                     tags.addAll(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
-                    if (tags.size() >= 5) {
-                        userMahjongTagDto.setTags(tags.subList(0, 5));
+                    if (tags.size() >= userTagListMaxLen) {
+                        userMahjongTagDto.setTags(tags.subList(0, userTagListMaxLen));
                         break;
                     }
                 }

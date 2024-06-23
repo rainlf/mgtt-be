@@ -19,4 +19,6 @@ public interface GameDetailRepository extends JpaRepository<GameDetail, Integer>
     List<GameDetail> findByUserIdAndType(Integer userId, Integer type);
 
     List<GameDetail> findByUserIdAndType(Integer userId, Integer type, Pageable pageable);
+
+    List<GameDetail> findByGameIdIn(List<Integer> gameIds);
 }

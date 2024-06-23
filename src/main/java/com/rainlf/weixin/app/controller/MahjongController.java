@@ -1,6 +1,7 @@
 package com.rainlf.weixin.app.controller;
 
 import com.rainlf.weixin.app.dto.ApiResp;
+import com.rainlf.weixin.app.dto.MahjongLogDto;
 import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.UserMahjongTagDto;
 import com.rainlf.weixin.domain.service.GameService;
@@ -57,10 +58,19 @@ public class MahjongController {
         return ApiResp.success(gameService.getUserMahjongTags(userIds));
     }
 
-//    @GetMapping("/records")
-//    public ApiResp<List<MahjongRecordDto>> getMahjongRecords(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-//        log.info("getMahjongRecords, pageNumber: {}, pageSize: {}", pageNumber, pageSize);
-//        return ApiResp.success(gameService.getMahjongRecords(pageNumber, pageSize));
+    @GetMapping("/logs")
+    public ApiResp<List<MahjongLogDto>> getMahjongLogs() {
+        log.info("getMahjongLogs");
+        List<MahjongLogDto> result = gameService.getMahjongLogs();
+        log.info("getMahjongLogs, size: {}", result.size());
+        return ApiResp.success(result);
+    }
+
+//    @GetMapping("/logs/page")
+//    public ApiResp<List<MahjongLogDto>> getMahjongLogs() {
+//        log.info("getMahjongLogs");
+//        List<MahjongLogDto> result = gameService.getMahjongLogs();
+//        log.info("getMahjongLogs, size: {}", result.size());
+//        return ApiResp.success(result);
 //    }
-//
 }

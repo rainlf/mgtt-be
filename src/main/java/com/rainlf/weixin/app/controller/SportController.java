@@ -1,7 +1,7 @@
 package com.rainlf.weixin.app.controller;
 
 import com.rainlf.weixin.app.dto.ApiResp;
-import com.rainlf.weixin.app.dto.MahjongRecordDto;
+import com.rainlf.weixin.app.dto.MahjongLogDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.domain.service.GameService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,5 @@ public class SportController {
         log.info("saveSportInfo, req: {}", sportInfoDto);
         gameService.saveSportInfo(sportInfoDto);
         return ApiResp.success();
-    }
-
-    @GetMapping("/records")
-    public ApiResp<List<MahjongRecordDto>> getSportRecords(@RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        log.info("getSportRecords, pageNumber: {}, pageSize: {}", pageNumber, pageSize);
-        return ApiResp.success(gameService.getMahjongRecords(pageNumber, pageSize));
     }
 }

@@ -1,6 +1,6 @@
 package com.rainlf.weixin.domain.service;
 
-import com.rainlf.weixin.app.dto.MahjongRecordDto;
+import com.rainlf.weixin.app.dto.MahjongLogDto;
 import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
 import com.rainlf.weixin.app.dto.UserMahjongTagDto;
@@ -22,7 +22,7 @@ public interface GameService {
 
     void saveSportInfo(SportInfoDto sportInfoDto);
 
-    List<MahjongRecordDto> getMahjongRecords(Integer pageNumber, Integer pageSize);
-
     List<UserMahjongTagDto> getUserMahjongTags(List<Integer> userIds);
+
+    List<MahjongLogDto> getMahjongLogs();
 }

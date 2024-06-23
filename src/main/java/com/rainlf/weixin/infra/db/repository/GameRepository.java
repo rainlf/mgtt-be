@@ -15,4 +15,5 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Integer> {
 
     List<Game> findByIdIn(List<Integer> ids);
+
 }
