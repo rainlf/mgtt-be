@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 public enum MahjongScoreExtEnum {
-    MJ_DOOR_CLEAN_FAN("胡牌"),
+    MJ_DOOR_CLEAN_FAN("门清"),
     MJ_PENG_PENG_FAN("碰碰胡"),
     MJ_SAME_COLOR_FAN("清一色"),
     MJ_BIG_CRANE_FAN("大吊车"),

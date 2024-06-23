@@ -8,6 +8,7 @@ import com.rainlf.weixin.app.dto.UserMahjongTagDto;
 import com.rainlf.weixin.domain.consts.GameDetailTypeEnum;
 import com.rainlf.weixin.domain.consts.GameTypeEnum;
 import com.rainlf.weixin.domain.consts.MahjongScoreExtEnum;
+import com.rainlf.weixin.domain.consts.MahjongWinCaseEnum;
 import com.rainlf.weixin.domain.service.GameService;
 import com.rainlf.weixin.infra.db.model.*;
 import com.rainlf.weixin.infra.db.repository.*;
@@ -136,22 +137,33 @@ public class GameServiceImpl implements GameService {
 
         // find user
         List<User> users = userRepository.findAllById(userId);
-        Map<Integer/* userId */, User> userMap = users.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+        Map<Integer/* userId */, User> userMap = users.stream().collect(Collectors.toMap(User::getId, x -> x));
 
         // create mahjong log list
         List<MahjongLogDto> result = new ArrayList<>();
         for (Game game : games) {
             Integer gameId = game.getId();
+            MahjongWinCaseEnum mahjongWinCaseEnum = MahjongWinCaseEnum.valueOf(game.getWinCase());
             List<MahjongScoreExtEnum> mahjongScoreExtEnums = JsonUtils.toObjectList(game.getScoreExt(), new TypeReference<>() {
             });
+
 
             // create mahjong log
             MahjongLogDto mahjongLogDto = new MahjongLogDto();
             mahjongLogDto.setGameId(gameId);
-            mahjongLogDto.setGameTags(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
+
+            // set tags
+            List<String> tags = new ArrayList<>();
+            if (mahjongWinCaseEnum != MahjongWinCaseEnum.MJ_COMMON_WIN) {
+                tags.add(mahjongWinCaseEnum.getName());
+            }
+            tags.addAll(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
+            mahjongLogDto.setGameTags(tags);
+
 
             // find all details in game
             List<GameDetail> gameDetailList = gameDetailsMap.get(gameId);
+
 
             // find recorder
             GameDetail recorderDetail = gameDetailList.stream().filter(x -> x.getType() == GameDetailTypeEnum.MAHJONG_AWARD.ordinal()).findFirst().orElseThrow();
@@ -213,9 +225,15 @@ public class GameServiceImpl implements GameService {
                 userMahjongTagDto.setUserId(userId);
                 List<String> tags = new ArrayList<>();
                 for (Game game : games) {
+                    // find tags
+                    MahjongWinCaseEnum mahjongWinCaseEnum = MahjongWinCaseEnum.valueOf(game.getWinCase());
                     List<MahjongScoreExtEnum> mahjongScoreExtEnums = JsonUtils.toObjectList(game.getScoreExt(), new TypeReference<>() {
                     });
+                    if (mahjongWinCaseEnum != MahjongWinCaseEnum.MJ_COMMON_WIN) {
+                        tags.add(mahjongWinCaseEnum.getName());
+                    }
                     tags.addAll(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
+
                     if (tags.size() >= userTagListMaxLen) {
                         userMahjongTagDto.setTags(tags.subList(0, userTagListMaxLen));
                         break;
@@ -223,7 +241,6 @@ public class GameServiceImpl implements GameService {
                 }
                 result.add(userMahjongTagDto);
             }
-
         }
 
         return result;
