@@ -17,7 +17,7 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private GameTypeEnum gameType;
+    private Integer gameType;
     private Integer recorderId;
     private Integer score;
     private String scoreExt;

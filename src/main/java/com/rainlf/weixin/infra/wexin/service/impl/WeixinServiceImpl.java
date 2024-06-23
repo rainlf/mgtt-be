@@ -1,6 +1,5 @@
 package com.rainlf.weixin.infra.wexin.service.impl;
 
-import com.google.gson.Gson;
 import com.rainlf.weixin.infra.util.JsonUtils;
 import com.rainlf.weixin.infra.wexin.model.WeixinSession;
 import com.rainlf.weixin.infra.wexin.service.WeixinService;
@@ -41,7 +40,7 @@ public class WeixinServiceImpl implements WeixinService {
 
         String respStr = restTemplate.getForObject(sb.toString(), String.class);
         log.info("code2Session, resp: {}", respStr);
-        WeixinSession resp = JsonUtils.fromJson(respStr, WeixinSession.class);
+        WeixinSession resp = JsonUtils.toObject(respStr, WeixinSession.class);
 
         if (resp == null) {
             throw new RuntimeException("code2Session error, resp is null");

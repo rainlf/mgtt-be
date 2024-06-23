@@ -1,10 +1,13 @@
 package com.rainlf.weixin.domain.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.rainlf.weixin.app.dto.MahjongRecordDto;
 import com.rainlf.weixin.app.dto.MahjongRoundInfoDto;
 import com.rainlf.weixin.app.dto.SportInfoDto;
+import com.rainlf.weixin.app.dto.UserMahjongTagDto;
 import com.rainlf.weixin.domain.consts.GameDetailTypeEnum;
 import com.rainlf.weixin.domain.consts.GameTypeEnum;
+import com.rainlf.weixin.domain.consts.MahjongScoreExtEnum;
 import com.rainlf.weixin.domain.service.GameService;
 import com.rainlf.weixin.infra.db.model.*;
 import com.rainlf.weixin.infra.db.repository.*;
@@ -12,6 +15,8 @@ import com.rainlf.weixin.infra.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +67,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Integer> getMahjongPlayerIds() {
-        List<MahjongPlayer> mahjongPlayers = mahjongPlayerRepository.findAll(Sort.by(Sort.Direction.ASC, "createTime"));
+        List<MahjongPlayer> mahjongPlayers = mahjongPlayerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         return mahjongPlayers.stream().map(MahjongPlayer::getUserId).collect(Collectors.toList());
     }
 
@@ -70,7 +75,7 @@ public class GameServiceImpl implements GameService {
     @Transactional(rollbackFor = Exception.class)
     public void saveMahjongInfo(MahjongRoundInfoDto mahjongRoundInfoDto) {
         Game game = new Game();
-        game.setGameType(GameTypeEnum.MAHJONG);
+        game.setGameType(GameTypeEnum.MAHJONG.ordinal());
         game.setRecorderId(mahjongRoundInfoDto.getRecorderId());
         game.setScore(mahjongRoundInfoDto.getBaseFan());
         game.setWinCase(mahjongRoundInfoDto.getWinCase().toString());
@@ -117,6 +122,42 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<MahjongRecordDto> getMahjongRecords(Integer pageNumber, Integer pageSize) {
         return null;
+    }
+
+    @Override
+    public List<UserMahjongTagDto> getUserMahjongTags(List<Integer> userIds) {
+        List<UserMahjongTagDto> result = new ArrayList<>();
+        for (Integer userId : userIds) {
+            // find game detail, get game id
+            Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "id"));
+//            List<GameDetail> gameDetails = gameDetailRepository.findByUserIdAndType(userId, 0, pageable);
+            List<GameDetail> gameDetails = gameDetailRepository.findByUserIdAndType(userId, GameDetailTypeEnum.MAHJONG_GAME.ordinal());
+            List<Integer> gameIds = gameDetails.stream().map(GameDetail::getGameId).toList();
+
+            // find game
+            if (!gameIds.isEmpty()) {
+                log.info("rain, gameId: {}", gameIds);
+                List<Game> games = gameRepository.findByIdIn(gameIds);
+                log.info("rain, {}", games);
+
+                UserMahjongTagDto userMahjongTagDto = new UserMahjongTagDto();
+                userMahjongTagDto.setUserId(userId);
+                List<String> tags = new ArrayList<>();
+                for (Game game : games) {
+                    List<MahjongScoreExtEnum> mahjongScoreExtEnums = JsonUtils.toObjectList(game.getScoreExt(), new TypeReference<>() {
+                    });
+                    tags.addAll(mahjongScoreExtEnums.stream().map(MahjongScoreExtEnum::getName).toList());
+                    if (tags.size() >= 5) {
+                        userMahjongTagDto.setTags(tags.subList(0, 5));
+                        break;
+                    }
+                }
+                result.add(userMahjongTagDto);
+            }
+
+        }
+
+        return result;
     }
 
     /**
@@ -171,7 +212,7 @@ public class GameServiceImpl implements GameService {
             GameDetail detail = new GameDetail();
             detail.setGameId(gameId);
             detail.setUserId(userId);
-            detail.setType(type);
+            detail.setType(type.ordinal());
             detail.setScore(socreMap.get(userId));
             gameDetails.add(detail);
         });

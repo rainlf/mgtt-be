@@ -19,7 +19,7 @@ public class GameDetail {
     private Integer id;
     private Integer gameId;
     private Integer userId;
-    private GameDetailTypeEnum type;
+    private Integer type;
     private Integer score;
     @Column(insertable = false, updatable = false)
     private LocalDateTime createTime;
