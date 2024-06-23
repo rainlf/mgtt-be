@@ -37,7 +37,7 @@ public class WeixinServiceImpl implements WeixinService {
         StringBuilder sb = new StringBuilder();
         sb.append(code2SessionUrl)
                 .append("?").append("appid").append("=").append(weixinConfigStore.getValue(weixinAppIdKey))
-                .append("&").append("secret").append("=").append(weixinConfigStore.getValue(weixinAppIdKey))
+                .append("&").append("secret").append("=").append(weixinConfigStore.getValue(weixinSecretKey))
                 .append("&").append("js_code").append("=").append(code)
                 .append("&").append("grant_type").append("=").append("authorization_code");
 
