@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}{cyan}</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 定义自定义 Appender -->
+    <appender name="CUSTOM" class="com.rainlf.mgttbe.infra.log.DbLogAppender">
+    </appender>
+
+    <!-- 根日志配置 -->
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CUSTOM" />
+    </root>
+</configuration>
