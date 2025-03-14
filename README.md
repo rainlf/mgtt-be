@@ -1,6 +1,9 @@
 # MGTT 
 ## SQL
 ```sql
+create database mgtt;
+use mgtt;
+
 create table mgtt_config
 (
     id           int auto_increment
