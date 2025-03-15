@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             user.setPoints(0);
             user = userManager.save(user);
         } else {
-            log.info("login, user exists");
+            log.info("login, user exists, username: {}", user.getUsername());
             user.setSessionKey(weixinSession.getSessionKey());
             user.setLastLoginTime(DateUtils.now());
             user = userManager.save(user);
