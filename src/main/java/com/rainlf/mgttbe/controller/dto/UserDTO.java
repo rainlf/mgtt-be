@@ -3,6 +3,7 @@ package com.rainlf.mgttbe.controller.dto;
 import com.rainlf.mgttbe.model.User;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -22,7 +23,9 @@ public class UserDTO {
     public static UserDTO fromUser(User user) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
-        userDTO.setAvatar("data:image/png;base64," + Base64.getEncoder().encodeToString(user.getAvatar()));
+        if (user.getAvatar() != null && user.getAvatar().length > 0) {
+            userDTO.setAvatar("data:image/png;base64," + Base64.getEncoder().encodeToString(user.getAvatar()));
+        }
         return userDTO;
     }
 }
