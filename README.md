@@ -73,3 +73,5 @@ create table mgtt_majiang_game_item
     updated_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP
 );
 ```
+## Network
+![342318525-b610a992-552d-40d0-8db9-56a1edd6c7c5](https://github.com/user-attachments/assets/2922f53f-b507-4552-bc09-d2bd3d452d4e)
