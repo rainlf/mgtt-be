@@ -109,34 +109,49 @@ public class UserServiceImpl implements UserService {
         List<User> users = userManager.findAllUsers();
 
         for (User user : users) {
-            // find last 10 games
-            List<MaJiangGame> maJiangGames = maJiangGameManager.findLastGamesByUserAndDays(user.getId(), 10);
-            Map<Integer, MaJiangGame> maJiangGameMap = maJiangGames.stream().collect(Collectors.toMap(MaJiangGame::getId, x -> x, (k1, k2) -> k1));
-            List<Integer> gameIds = maJiangGames.stream().map(MaJiangGame::getId).toList();
+            // find last 20 games
+            List<MaJiangGame> games = maJiangGameManager.findLastGamesByUser(user.getId(), 20);
+            List<MaJiangGameInfo> gameInfos = new ArrayList<>();
+            games.forEach(game -> {
+                List<MaJiangGameItem> items = maJiangGameItemManager.findByGameId(game.getId());
+                MaJiangGameInfo gameinfo = new MaJiangGameInfo();
+                gameinfo.setGame(game);
+                gameinfo.setItems(items);
+                gameInfos.add(gameinfo);
+            });
 
-            // find relation game items
-            List<MaJiangGameItem> maJiangGameItems = maJiangGameItemManager.findByGameIdAndUserId(gameIds, user.getId());
-
-            // find winner & loser game items
-            List<MaJiangGameItem> playerItems = maJiangGameItems
-                    .stream()
-                    .filter(x -> Objects.equals(x.getType(), MaJiangUserType.WINNER) || Objects.equals(x.getType(), MaJiangUserType.LOSER))
-                    .toList();
-
+            Integer userId = user.getId();
             List<String> tags = new ArrayList<>();
-            playerItems.forEach(x -> {
-                MaJiangGame maJiangGame = maJiangGameMap.get(x.getGameId());
-                if (!Objects.equals(maJiangGame.getType(), MaJiangGameType.PING_HU)) {
-                    tags.add(maJiangGame.getType().getName());
+            gameInfos.forEach(gameinfo -> {
+                MaJiangGameItem gameItem = gameinfo.findUserGameItem(userId);
+                // winner or loser
+                if (gameItem != null) {
+                    // winner
+                    if (gameItem.getType() == MaJiangUserType.WINNER) {
+                        // 自摸
+                        if (gameinfo.getGame().getType() == MaJiangGameType.ZI_MO) {
+                            tags.add(gameinfo.getGame().getType().getName());
+                        }
+                        // 赢家牌型
+                        tags.addAll(gameItem.getWinTypes().stream().map(MaJiangWinType::getName).toList());
+                    }
+                    // loser
+                    if (gameItem.getType() == MaJiangUserType.LOSER) {
+                        if (gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SHUANG_XIANG || gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SAN_XIANG) {
+                            tags.add(gameinfo.getGame().getType().getName());
+                        }
+                    }
                 }
             });
-            tags.addAll(playerItems.stream().filter(x -> x.getWinTypes() != null).flatMap(x -> x.getWinTypes().stream()).map(MaJiangWinType::getName).toList());
             user.setLastTags(tags.stream().distinct().collect(Collectors.toList()));
         }
 
-        List<User> sortedUsers = new ArrayList<>(users);
-        sortedUsers.sort(Comparator.comparing(User::getPoints).reversed());
-        return sortedUsers;
+        List<User> zeroUser = users.stream().filter(x -> x.getPoints() == 0).toList();
+        List<User> nonZeroUser = users.stream().filter(x -> x.getPoints() != 0).toList();
+        List<User> sortedUser = new ArrayList<>(nonZeroUser);
+        sortedUser.sort(Comparator.comparing(User::getPoints).reversed());
+        sortedUser.addAll(zeroUser);
+        return sortedUser;
     }
 
     @Override
