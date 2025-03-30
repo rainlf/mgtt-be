@@ -218,10 +218,18 @@ public class MaJiangServiceImpl implements MaJiangService {
 
     @Override
     @Transactional
-    public void deleteMaJiangGame(Integer id) {
+    public void deleteMaJiangGame(Integer id, Integer userId) {
         MaJiangGame maJiangGame = majiangGameManager.findByIdWithLock(id);
         if (maJiangGame == null) {
-            throw new RuntimeException("majianggame not exist, id: " + id);
+            throw new RuntimeException("majianggame not exist, game id: " + id);
+        }
+        List<MaJiangGameItem> items = majiangGameItemManager.findByGameIdAndType(id, MaJiangUserType.RECORDER);
+        if (items.size() != 1) {
+            throw new RuntimeException("majianggame recorder is null or multi, game id: " + id);
+        }
+        MaJiangGameItem recorder = items.getFirst();
+        if (!Objects.equals(recorder.getUserId(), userId)) {
+            throw new RuntimeException("only recorder can delete this game record");
         }
 
         List<MaJiangGameItem> maJiangGameItems = majiangGameItemManager.findByGameId(id);

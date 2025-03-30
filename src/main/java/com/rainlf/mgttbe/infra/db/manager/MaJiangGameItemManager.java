@@ -36,6 +36,13 @@ public class MaJiangGameItemManager {
                 .collect(Collectors.toList());
     }
 
+    public List<MaJiangGameItem> findByGameIdAndType(Integer gameId, MaJiangUserType userType) {
+        return majiangGameItemRepository.findByGameIdAndType(gameId, userType.getCode())
+                .stream()
+                .map(this::toMaJiangGameItem)
+                .collect(Collectors.toList());
+    }
+
     public List<MaJiangGameItem> findByGameIdAndUserId(List<Integer> gameIds, Integer userId) {
         return majiangGameItemRepository.findByGameIdInAndUserId(gameIds, userId)
                 .stream()

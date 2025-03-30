@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface MaJiangGameItemRepository extends JpaRepository<MaJiangGameItemDO, Integer> {
 
+    List<MaJiangGameItemDO> findByGameIdAndType(Integer gameId, Integer type);
+
     List<MaJiangGameItemDO> findByGameIdInAndUserIdAndType(List<Integer> gameIds, Integer userId, Integer type);
 
     List<MaJiangGameItemDO> findByGameIdInAndUserId(List<Integer> gameIds, Integer userId);

@@ -39,8 +39,9 @@ public class MaJiangController {
     }
 
     @DeleteMapping("/game")
-    public ApiResponse<Void> deleteMaJiangGame(@RequestParam("id") Integer id) {
-        majiangService.deleteMaJiangGame(id);
+    public ApiResponse<Void> deleteMaJiangGame(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId) {
+        log.info("deleteMaJiangGame, id: {}, userId: {}", id, userId);
+        majiangService.deleteMaJiangGame(id, userId);
         return ApiResponse.success();
     }
 
@@ -71,7 +72,7 @@ public class MaJiangController {
             throw new RuntimeException("Invalid winners, winners must contain at least one user");
         }
 
-        if (request.getWinners().stream().anyMatch(x ->  x.getBasePoints() <= 0)) {
+        if (request.getWinners().stream().anyMatch(x -> x.getBasePoints() <= 0)) {
             throw new RuntimeException("Invalid winners, winners basepoint must be greater than 0");
         }
 

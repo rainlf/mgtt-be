@@ -13,7 +13,7 @@ public interface MaJiangService {
 
     List<MaJiangGameLogDTO> getMaJiangGamesByUser(Integer userId);
 
-    void deleteMaJiangGame(Integer id);
+    void deleteMaJiangGame(Integer id, Integer userId);
 
     PlayersDTO getMaJiangGamePlayers();
 }
