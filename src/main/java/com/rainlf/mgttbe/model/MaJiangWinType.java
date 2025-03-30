@@ -12,7 +12,7 @@ public enum MaJiangWinType {
     HUN_YI_SE("混一色", 4, 2),
     QING_YI_SE("清一色", 5, 4),
     XIAO_QI_DUI("小七对", 6, 4),
-    LONG_QI_DUI("龙七对", 7, 4),
+    LONG_QI_DUI("龙七对", 7, 8),
     DA_DIAO_CHE("大吊车", 8, 2),
     MEN_QING("门前清", 9, 2),
     GANG_KAI("杠开花", 10, 2),
