@@ -50,6 +50,7 @@ public class ApiMonitorInterceptor implements HandlerInterceptor {
             log.setCostTime((int) Duration.between(BIzContext.getContext().getStartTime(), BIzContext.getContext().getEndTime()).toMillis());
             log.setIpAddress(getClientIp(request));
             log.setCreateTime(LocalDateTime.now());
+            log.setBizId(BIzContext.getContext().getBizId());
 
             // Controller方法信息
             if (handler instanceof HandlerMethod handlerMethod) {

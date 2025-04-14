@@ -21,4 +21,6 @@ public class MgttLog {
     private LocalDateTime createdTime;
     @Column(insertable = false, updatable = false)
     private LocalDateTime updatedTime;
+    @Column(name = "biz_id")
+    private String bizId;
 }

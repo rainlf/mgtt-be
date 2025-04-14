@@ -7,6 +7,7 @@ import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.AppenderBase;
 import com.rainlf.mgttbe.infra.db.dataobj.MgttLog;
 import com.rainlf.mgttbe.infra.db.manager.MgttLogManager;
+import com.rainlf.mgttbe.infra.interceptor.BIzContext;
 
 public class DbLogAppender extends AppenderBase<ILoggingEvent> {
 
@@ -26,6 +27,7 @@ public class DbLogAppender extends AppenderBase<ILoggingEvent> {
         log.setThread(eventObject.getThreadName());
         log.setMessage(message);
         log.setStackTrace(stackTrace);
+        log.setBizId(BIzContext.getContext().getBizId());
 
         MgttLogManager.getInstance().saveLog(log);
     }

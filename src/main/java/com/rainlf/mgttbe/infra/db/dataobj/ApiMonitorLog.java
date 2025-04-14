@@ -45,4 +45,7 @@ public class ApiMonitorLog {
 
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
+
+    @Column(name = "biz_id", length = 128)
+    private String bizId;
 }
