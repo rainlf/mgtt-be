@@ -144,9 +144,25 @@ public class MaJiangServiceImpl implements MaJiangService {
 
     @Override
     public List<MaJiangGameLogDTO> getMaJiangGamesByUser(Integer userId) {
-        List<Integer> lastGameIds = majiangGameItemManager.findLastGameIdsByUserId(userId, 100);
+        List<Integer> lastGameIds = majiangGameItemManager.findLastGameIdsByUserIdAndTypeIn(userId, List.of(MaJiangUserType.WINNER, MaJiangUserType.LOSER), 100);
         List<MaJiangGame> games = majiangGameManager.findByIdIn(lastGameIds);
-        return buildMaJiangGameLogDTO(games);
+        return buildMaJiangGameLogDTO(userId, games);
+    }
+
+    private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(Integer userId, List<MaJiangGame> games) {
+        List<MaJiangGameLogDTO> result = buildMaJiangGameLogDTO(games);
+        for (MaJiangGameLogDTO maJiangGameLogDTO : result) {
+            maJiangGameLogDTO.setForOnePlayer(true);
+            if (maJiangGameLogDTO.getWinners().stream().map(x->x.getUser().getId()).collect(Collectors.toSet()).contains(userId)) {
+                maJiangGameLogDTO.setPlayerWin(true);
+            } else if (maJiangGameLogDTO.getLosers().stream().map(x->x.getUser().getId()).collect(Collectors.toSet()).contains(userId)) {
+                maJiangGameLogDTO.setPlayerWin(false);
+            } else {
+                log.error("should not happen");
+                maJiangGameLogDTO.setPlayerWin(false);
+            }
+        }
+        return result;
     }
 
     private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(List<MaJiangGame> games) {

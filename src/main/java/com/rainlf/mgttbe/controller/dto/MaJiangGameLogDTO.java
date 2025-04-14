@@ -17,6 +17,8 @@ public class MaJiangGameLogDTO {
     private List<Item> winners;
     private List<Item> losers;
     private Item recorder;
+    private boolean forOnePlayer;
+    private boolean playerWin;
 
 
     @Data

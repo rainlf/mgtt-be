@@ -21,4 +21,7 @@ public interface MaJiangGameItemRepository extends JpaRepository<MaJiangGameItem
 
     @Query("select m.gameId from MaJiangGameItemDO m where m.userId = :userId order by m.createdTime desc limit :limit")
     List<Integer> findLastGameIdsByUserId(@Param("userId") Integer userId, @Param("limit") Integer limit);
+
+    @Query("select m.gameId from MaJiangGameItemDO m where m.userId = :userId and m.type in (:types) order by m.createdTime desc limit :limit")
+    List<Integer> findLastGameIdsByUserIdAndTypeIn(@Param("userId") Integer userId, @Param("types") List<Integer> types, @Param("limit") Integer limit);
 }
