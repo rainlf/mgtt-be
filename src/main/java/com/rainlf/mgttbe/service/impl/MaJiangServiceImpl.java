@@ -116,8 +116,8 @@ public class MaJiangServiceImpl implements MaJiangService {
         recorder.setGameId(gameId);
         recorder.setUserId(request.getRecorderId());
         recorder.setType(MaJiangUserType.RECORDER);
-        // 生成一个 0 到 99 之间的随机整数, 1% 加 100, 99% 加 1
-        int recorderPoints = (random.nextInt(100) < 1) ? 100 : 1;
+        // 生成一个 0 到 99 之间的随机整数, 1% 加 20, 99% 加 1
+        int recorderPoints = (random.nextInt(100) < 1) ? 20 : 1;
         recorder.setPoints(recorderPoints);
 
         List<MaJiangGameItem> items = new ArrayList<>();
