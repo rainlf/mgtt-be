@@ -1,5 +1,6 @@
 package com.rainlf.mgttbe.infra.db.repository;
 
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.db.dataobj.MaJiangGameItemDO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,7 @@ public interface MaJiangGameItemRepository extends JpaRepository<MaJiangGameItem
     @Query("select m.gameId from MaJiangGameItemDO m where m.userId = :userId order by m.createdTime desc limit :limit")
     List<Integer> findLastGameIdsByUserId(@Param("userId") Integer userId, @Param("limit") Integer limit);
 
+    @ExecutionTime
     @Query("select m.gameId from MaJiangGameItemDO m where m.userId = :userId and m.type in (:types) order by m.createdTime desc limit :limit")
     List<Integer> findLastGameIdsByUserIdAndTypeIn(@Param("userId") Integer userId, @Param("types") List<Integer> types, @Param("limit") Integer limit);
 }

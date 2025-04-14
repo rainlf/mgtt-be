@@ -1,5 +1,6 @@
 package com.rainlf.mgttbe.infra.db.repository;
 
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.db.dataobj.MaJiangGameDO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +12,13 @@ import java.util.List;
 @Repository
 public interface MaJiangGameRepository extends JpaRepository<MaJiangGameDO, Integer> {
 
+    @ExecutionTime
     List<MaJiangGameDO> findByIdIn(List<Integer> ids);
 
     @Query(value = "select * from mgtt_majiang_game m where m.id = :id and m.is_deleted = 0 for update", nativeQuery = true)
     MaJiangGameDO findByIdWithLock(@Param("id") Integer id);
 
+    @ExecutionTime
     @Query("select m from MaJiangGameDO m where m.isDeleted = 0 order by m.createdTime desc limit :limit")
     List<MaJiangGameDO> findLastGames(@Param("limit") Integer limit);
 

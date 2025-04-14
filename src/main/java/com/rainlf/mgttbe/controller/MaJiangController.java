@@ -4,6 +4,7 @@ import com.rainlf.mgttbe.controller.dto.ApiResponse;
 import com.rainlf.mgttbe.controller.dto.MaJiangGameLogDTO;
 import com.rainlf.mgttbe.controller.dto.PlayersDTO;
 import com.rainlf.mgttbe.controller.dto.SaveMaJiangGameRequest;
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.util.JsonUtils;
 import com.rainlf.mgttbe.service.MaJiangService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,13 @@ public class MaJiangController {
     private MaJiangService majiangService;
 
     @GetMapping("/games")
+    @ExecutionTime
     public ApiResponse<List<MaJiangGameLogDTO>> getMaJiangGames() {
         return ApiResponse.success(majiangService.getMaJiangGameLogs());
     }
 
     @GetMapping("/user/games")
+    @ExecutionTime
     public ApiResponse<List<MaJiangGameLogDTO>> getMaJiangGamesByUser(@RequestParam("userId") Integer userId) {
         return ApiResponse.success(majiangService.getMaJiangGamesByUser(userId));
     }

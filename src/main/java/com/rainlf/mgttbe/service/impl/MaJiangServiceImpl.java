@@ -4,6 +4,7 @@ import com.rainlf.mgttbe.controller.dto.MaJiangGameLogDTO;
 import com.rainlf.mgttbe.controller.dto.PlayersDTO;
 import com.rainlf.mgttbe.controller.dto.SaveMaJiangGameRequest;
 import com.rainlf.mgttbe.controller.dto.UserDTO;
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.db.manager.MaJiangGameItemManager;
 import com.rainlf.mgttbe.infra.db.manager.MaJiangGameManager;
 import com.rainlf.mgttbe.infra.util.DateUtils;
@@ -137,18 +138,21 @@ public class MaJiangServiceImpl implements MaJiangService {
     }
 
     @Override
+    @ExecutionTime
     public List<MaJiangGameLogDTO> getMaJiangGameLogs() {
         List<MaJiangGame> games = majiangGameManager.findLastGames(100);
         return buildMaJiangGameLogDTO(games);
     }
 
     @Override
+    @ExecutionTime
     public List<MaJiangGameLogDTO> getMaJiangGamesByUser(Integer userId) {
         List<Integer> lastGameIds = majiangGameItemManager.findLastGameIdsByUserIdAndTypeIn(userId, List.of(MaJiangUserType.WINNER, MaJiangUserType.LOSER), 100);
         List<MaJiangGame> games = majiangGameManager.findByIdIn(lastGameIds);
         return buildMaJiangGameLogDTO(userId, games);
     }
 
+    @ExecutionTime
     private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(Integer userId, List<MaJiangGame> games) {
         List<MaJiangGameLogDTO> result = buildMaJiangGameLogDTO(games);
         for (MaJiangGameLogDTO maJiangGameLogDTO : result) {
@@ -165,6 +169,7 @@ public class MaJiangServiceImpl implements MaJiangService {
         return result;
     }
 
+    @ExecutionTime
     private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(List<MaJiangGame> games) {
         List<MaJiangGameLogDTO> dtos = new ArrayList<>();
         for (MaJiangGame game : games) {

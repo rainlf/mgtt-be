@@ -1,6 +1,7 @@
 package com.rainlf.mgttbe.infra.db.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.db.dataobj.MaJiangGameItemDO;
 import com.rainlf.mgttbe.infra.db.repository.MaJiangGameItemRepository;
 import com.rainlf.mgttbe.infra.util.JsonUtils;
@@ -61,6 +62,7 @@ public class MaJiangGameItemManager {
         return majiangGameItemRepository.findLastGameIdsByUserId(userId, limit);
     }
 
+    @ExecutionTime
     public List<Integer> findLastGameIdsByUserIdAndTypeIn(Integer userId, List<MaJiangUserType> types,  Integer limit) {
         return majiangGameItemRepository.findLastGameIdsByUserIdAndTypeIn(userId, types.stream().map(MaJiangUserType::getCode).toList(), limit);
     }

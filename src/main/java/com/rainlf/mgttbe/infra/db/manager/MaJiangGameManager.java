@@ -1,5 +1,6 @@
 package com.rainlf.mgttbe.infra.db.manager;
 
+import com.rainlf.mgttbe.infra.aop.ExecutionTime;
 import com.rainlf.mgttbe.infra.db.dataobj.MaJiangGameDO;
 import com.rainlf.mgttbe.infra.db.repository.MaJiangGameRepository;
 import com.rainlf.mgttbe.model.MaJiangGame;
@@ -25,6 +26,7 @@ public class MaJiangGameManager {
         return toMaJiangGame(majiangGameRepository.findByIdWithLock(id));
     }
 
+    @ExecutionTime
     public List<MaJiangGame> findByIdIn(List<Integer> ids) {
         return majiangGameRepository.findByIdIn(ids).stream().map(this::toMaJiangGame).toList();
     }
@@ -33,6 +35,7 @@ public class MaJiangGameManager {
         return majiangGameRepository.findById(id).map(this::toMaJiangGame).orElse(null);
     }
 
+    @ExecutionTime
     public List<MaJiangGame> findLastGames(Integer limit) {
         return majiangGameRepository.findLastGames(limit)
                 .stream()
