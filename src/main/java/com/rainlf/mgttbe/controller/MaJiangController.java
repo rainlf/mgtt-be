@@ -25,13 +25,31 @@ public class MaJiangController {
     @GetMapping("/games")
     @ExecutionTime
     public ApiResponse<List<MaJiangGameLogDTO>> getMaJiangGames() {
-        return ApiResponse.success(majiangService.getMaJiangGameLogs());
+        List<MaJiangGameLogDTO> result = majiangService.getMaJiangGameLogs();
+        result.forEach(x -> {
+            x.getPlayer1().setAvatar(null);
+            x.getPlayer2().setAvatar(null);
+            x.getPlayer3().setAvatar(null);
+            x.getPlayer4().setAvatar(null);
+            x.getWinners().forEach(y -> y.getUser().setAvatar(null));
+            x.getLosers().forEach(y -> y.getUser().setAvatar(null));
+        });
+        return ApiResponse.success(result);
     }
 
     @GetMapping("/user/games")
     @ExecutionTime
     public ApiResponse<List<MaJiangGameLogDTO>> getMaJiangGamesByUser(@RequestParam("userId") Integer userId) {
-        return ApiResponse.success(majiangService.getMaJiangGamesByUser(userId));
+        List<MaJiangGameLogDTO> result = majiangService.getMaJiangGamesByUser(userId);
+        result.forEach(x -> {
+            x.getPlayer1().setAvatar(null);
+            x.getPlayer2().setAvatar(null);
+            x.getPlayer3().setAvatar(null);
+            x.getPlayer4().setAvatar(null);
+            x.getWinners().forEach(y -> y.getUser().setAvatar(null));
+            x.getLosers().forEach(y -> y.getUser().setAvatar(null));
+        });
+        return ApiResponse.success(result);
     }
 
     @PostMapping("/game")
