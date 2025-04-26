@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -110,6 +107,17 @@ public class MaJiangServiceImpl implements MaJiangService {
                 }
                 losers.getFirst().setPoints(-points);
             }
+            case XIANG_GONG -> {
+                if (winners.size() != 3 || losers.size() != 1) {
+                    throw new RuntimeException("Xiang Gong losers don't match");
+                }
+                int points = 0;
+                for (MaJiangGameItem x : winners) {
+                    x.calculatePoints();
+                    points += x.getPoints();
+                }
+                losers.getFirst().setPoints(-points);
+            }
         }
 
         // recorder
@@ -153,7 +161,9 @@ public class MaJiangServiceImpl implements MaJiangService {
     }
 
     @ExecutionTime
-    private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(Integer userId, List<MaJiangGame> games) {
+    private List<MaJiangGameLogDTO> buildMaJiangGameLogDTO(Integer userId, List<MaJiangGame> gamesInput) {
+        List<MaJiangGame> games = new ArrayList<>(gamesInput);
+        games.sort(Comparator.comparing(MaJiangGame::getCreatedTime, Comparator.nullsLast(Comparator.reverseOrder())));
         List<MaJiangGameLogDTO> result = buildMaJiangGameLogDTO(games);
         for (MaJiangGameLogDTO maJiangGameLogDTO : result) {
             maJiangGameLogDTO.setForOnePlayer(true);
@@ -178,7 +188,7 @@ public class MaJiangServiceImpl implements MaJiangService {
             if (Objects.equals(game.getType(), MaJiangGameType.ZI_MO)) {
                 dto.setType(MaJiangGameType.ZI_MO.getName());
             } else {
-                dto.setType(MaJiangGameType.PING_HU.getName());
+                dto.setType(game.getType().getName());
             }
 
             dto.setPlayer1(UserDTO.fromUser(userService.findUserById(game.getPlayer1())));

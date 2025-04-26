@@ -137,7 +137,9 @@ public class UserServiceImpl implements UserService {
                     }
                     // loser
                     if (gameItem.getType() == MaJiangUserType.LOSER) {
-                        if (gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SHUANG_XIANG || gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SAN_XIANG) {
+                        if (gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SHUANG_XIANG
+                                || gameinfo.getGame().getType() == MaJiangGameType.YI_PAO_SAN_XIANG
+                                || gameinfo.getGame().getType() == MaJiangGameType.XIANG_GONG) {
                             tags.add(gameinfo.getGame().getType().getName());
                         }
                     }
